@@ -7,8 +7,8 @@ class DisplayAvailabeItem extends StatefulWidget {
 
   @override
   State<DisplayAvailabeItem> createState() => _DisplayAvailabeItemState();
-}
-
+} 
+// 
 class _DisplayAvailabeItemState extends State<DisplayAvailabeItem> {
   static const List<Color> colors = [
     Color(0xFF2E7D32), // Dark Green
