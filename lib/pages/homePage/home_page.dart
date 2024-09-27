@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Model/best_selling.dart';
 import 'package:myshop/Model/user_model.dart';
+import 'package:myshop/pages/categoryWiseItem/category_item.dart';
+import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/services/UserServices/user_services.dart';
 import 'package:myshop/utils/colors.dart';
@@ -8,6 +10,7 @@ import 'package:myshop/utils/images.dart';
 import 'package:myshop/widgets/features/best_selling.dart';
 import 'package:myshop/widgets/global/category_avatar.dart';
 import 'package:myshop/widgets/global/offer_card.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
@@ -18,11 +21,12 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  static const List<String> catItemsImages = [
-    AppImages.fruits,
-    AppImages.vegetables,
-    AppImages.dairy,
-    AppImages.meat
+ static const List<Map<String, String>> catItemsList = [
+    {"catName": "Fruits", "catImage": AppImages.fruits},
+    {"catName": "Vegetables", "catImage": AppImages.vegetables},
+    {"catName": "Dairy", "catImage": AppImages.dairy},
+    {"catName": "Meat", "catImage": AppImages.meat},
+    {"catName": "Bakery", "catImage": AppImages.bakery},
   ];
   static const List<Color> offerCardCOlors = [
     Colors.orange,
@@ -322,14 +326,46 @@ class _HomepageState extends State<Homepage> {
                 child: Column(
                   children: [
                     Row(children: [
-                      CircleAvatar(
-                          maxRadius: 25,
-                          foregroundImage: (currentUser != null)
-                              ? currentUser!.profileImage!.isNotEmpty
-                                  ? NetworkImage(
-                                      currentUser!.profileImage.toString())
-                                  : const AssetImage(AppImages.userProfileImage)
-                              : const AssetImage(AppImages.userProfileImage)),
+                      InkWell(
+                        onTap: () {
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: PhotoView(
+                                    minScale: PhotoViewComputedScale.contained,
+                                    maxScale:
+                                        PhotoViewComputedScale.covered * 2.0,
+                                    backgroundDecoration: BoxDecoration(
+                                        color: AppColors.blackColor
+                                            .withOpacity(0.3)),
+                                    customSize:
+                                        const Size(double.infinity, 400),
+                                    imageProvider: (currentUser != null)
+                                        ? currentUser!.profileImage!.isNotEmpty
+                                            ? NetworkImage(currentUser!
+                                                .profileImage
+                                                .toString())
+                                            : const AssetImage(
+                                                AppImages.userProfileImage)
+                                        : const AssetImage(
+                                            AppImages.userProfileImage)),
+                              );
+                            },
+                          );
+                        },
+                        child: CircleAvatar(
+                            maxRadius: 25,
+                            foregroundImage: (currentUser != null)
+                                ? currentUser!.profileImage!.isNotEmpty
+                                    ? NetworkImage(
+                                        currentUser!.profileImage.toString())
+                                    : const AssetImage(
+                                        AppImages.userProfileImage)
+                                : const AssetImage(AppImages.userProfileImage)),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Column(
@@ -446,9 +482,13 @@ class _HomepageState extends State<Homepage> {
                 height: 73,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: catItemsImages.length,
+                    itemCount: catItemsList.length,
                     itemBuilder: (context, index) =>
-                        CategoryCircle(image: catItemsImages[index])),
+                        GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (_)=> CategoryItem(categoryName: catItemsList[index]['catName'] ?? '') ));
+                            },
+                          child: CategoryCircle(image: catItemsList[index]['catImage'] ?? AppImages.fruits))),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -477,10 +517,18 @@ class _HomepageState extends State<Homepage> {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: bestSellingItems.length,
-                    itemBuilder: (context, index) => ItemCard(
-                        price: bestSellingItems[index].itemPrice,
-                        name: bestSellingItems[index].itemName,
-                        image: bestSellingItems[index].itemImage)),
+                    itemBuilder: (context, index) => InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const ItemDetailPage()));
+                          },
+                          child: ItemCard(
+                              price: bestSellingItems[index].itemPrice,
+                              name: bestSellingItems[index].itemName,
+                              image: bestSellingItems[index].itemImage),
+                        )),
               )
             ],
           ),

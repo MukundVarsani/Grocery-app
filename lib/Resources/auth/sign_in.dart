@@ -2,6 +2,7 @@
 
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/admin_home_page.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/Resources/auth/sign_up.dart';
 import 'package:myshop/pages/bottom_navigation_bar.dart';
@@ -36,6 +37,7 @@ class _SignInPageState extends State<SignInPage> {
 
   bool isCheck = false;
   bool isLoading = false;
+  bool isAdmin = false;
 
   void userSign() async {
     if (_formKey.currentState!.validate()) {
@@ -53,6 +55,7 @@ class _SignInPageState extends State<SignInPage> {
           Provider.of<UserProvider>(context, listen: false);
 
       await userProvider.setUser();
+       isAdmin = userProvider.getCurrentUser?.role == 'Admin' ? true : false;
 
       setState(() {
         isLoading = false;
@@ -66,8 +69,10 @@ class _SignInPageState extends State<SignInPage> {
           VxToast.show(context, msg: "Welcome ${currentUser.name}");
         }
 
+        
+
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const BottomNavigationBare()));
+            MaterialPageRoute(builder: (_) =>  isAdmin ? const AdminHomePage() : const BottomNavigationBare()));
 
         emailController.clear();
         passwordController.clear();
@@ -211,8 +216,7 @@ class _SignInPageState extends State<SignInPage> {
                                   )),
                               InkWell(
                                 onTap: () {
-                                  _auth.forgetPassword(
-                                      "yarobop401@jofuso.com");
+                                  _auth.forgetPassword("yarobop401@jofuso.com");
                                 },
                                 child: const Text(
                                   'Forget Password',

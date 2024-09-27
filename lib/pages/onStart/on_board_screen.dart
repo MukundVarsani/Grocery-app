@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/admin_home_page.dart';
 import 'package:myshop/Resources/auth/sign_in.dart';
 import 'package:myshop/pages/bottom_navigation_bar.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
@@ -9,6 +10,7 @@ import 'package:myshop/utils/images.dart';
 import 'package:myshop/utils/utils.dart';
 import 'package:myshop/widgets/global/button.dart';
 import 'package:provider/provider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 // ignore: must_be_immutable
 class OnBoardScreen extends StatefulWidget {
@@ -20,6 +22,7 @@ class OnBoardScreen extends StatefulWidget {
 
 class _OnBoardScreenState extends State<OnBoardScreen> {
   bool isLoggedIn = false;
+  bool isAdmin = false;
 
   late UserProvider _userProvider;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,16 +35,21 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     getUserId();
 
     Timer(const Duration(seconds: 2), () async {
-
       if (isLoggedIn) {
         await _userProvider.setUser();
+        _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+        isAdmin = _userProvider.getCurrentUser?.role == 'Admin' ? true : false;
+       
       }
 
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => isLoggedIn
-                  ? const BottomNavigationBare()
+                  ? isAdmin
+                      ? const AdminHomePage()
+                      : const BottomNavigationBare()
                   : const SignInPage()));
     });
   }
