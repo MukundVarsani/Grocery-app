@@ -15,7 +15,7 @@ class AdminHomePage extends StatefulWidget {
 class _AdminHomePageState extends State<AdminHomePage> {
   static const List<Map<String, String>> catItemsList = [
     {"catName": "Fruits", "catImage": AppImages.fruits},
-    {"catName": "Vegetable", "catImage": AppImages.vegetables},
+    {"catName": "Vegetables", "catImage": AppImages.vegetables},
     {"catName": "Dairy", "catImage": AppImages.dairy},
     {"catName": "Meat", "catImage": AppImages.meat},
   ];

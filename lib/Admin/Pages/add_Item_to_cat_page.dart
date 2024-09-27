@@ -13,7 +13,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 class AddItemToCart extends StatefulWidget {
   final String cat;
-  const AddItemToCart({super.key, this.cat = ""});
+  const AddItemToCart({super.key, this.cat = "Fruits"});
 
   @override
   State<AddItemToCart> createState() => _AddItemToCartState();
@@ -140,6 +140,7 @@ class _AddItemToCartState extends State<AddItemToCart> {
       appBar: AppBar(
         backgroundColor: AppColors.themeColor,
         centerTitle: true,
+        leading: BackButton(color: AppColors.whiteColor , onPressed: ()=>Navigator.pop(context),),
         title: const Text(
           "Add Fruit to cart",
           style: TextStyle(

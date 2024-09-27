@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Admin/Common/show_stock_card.dart';
+import 'package:myshop/Admin/Pages/add_Item_to_cat_page.dart';
 import 'package:myshop/Admin/Pages/product_detail_Page.dart';
 import 'package:myshop/Admin/Services/admin_services.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/utils/colors.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class DisplayAvailabeItem extends StatefulWidget {
   final String categoryName;
@@ -51,6 +51,22 @@ class _DisplayAvailabeItemState extends State<DisplayAvailabeItem> {
             icon: const BackButtonIcon(),
             color: AppColors.whiteColor,
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => AddItemToCart(
+                                cat: widget.categoryName,
+                              )));
+                },
+                icon: const Icon(
+                  Icons.add,
+                  size: 28,
+                  color: AppColors.whiteColor,
+                ))
+          ],
           backgroundColor: AppColors.themeColor,
           title: const Text("Available Stock",
               style: TextStyle(
@@ -86,7 +102,11 @@ class _DisplayAvailabeItemState extends State<DisplayAvailabeItem> {
                         ),
                       );
                     })
-                : const Center(child:  Text("☹\nData Not found" , textAlign: TextAlign.center,style: TextStyle(fontSize:  28, fontWeight:  FontWeight.w400)))
+                : const Center(
+                    child: Text("☹\nData Not found",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w400)))
             : const Center(child: CircularProgressIndicator()));
   }
 }
