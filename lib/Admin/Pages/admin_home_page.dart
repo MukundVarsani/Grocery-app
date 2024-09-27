@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/display_avail_Item.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
 
@@ -12,13 +13,16 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
-  static const List<String> catItemsImages = [
-    AppImages.fruits,
-    AppImages.vegetables,
-    AppImages.dairy,
-    AppImages.meat
+  static const List<Map<String, String>> catItemsList = [
+    {"catName": "Fruits", "catImage": AppImages.fruits},
+    {"catName": "Vegetable", "catImage": AppImages.vegetables},
+    {"catName": "Dairy", "catImage": AppImages.dairy},
+    {"catName": "Meat", "catImage": AppImages.meat},
   ];
-
+  // AppImages.fruits,
+  // AppImages.vegetables,
+  // AppImages.dairy,
+  // AppImages.meat
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +39,15 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20)
                     .copyWith(bottom: 20),
                 color: AppColors.lightModeCardColor,
-                child: const  Column(
+                child: const Column(
                   children: [
                     Row(children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                           maxRadius: 25,
                           foregroundImage:
                               AssetImage(AppImages.userProfileImage)),
-                      const Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -63,16 +67,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         ),
                       ),
                       const Spacer(),
-                      
                     ]),
                     const SizedBox(
                       height: 20,
                     ),
-
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -99,12 +100,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 height: 73,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: catItemsImages.length,
-                    itemBuilder: (context, index) =>
-                        CategoryCircle(image: catItemsImages[index])),
+                    itemCount: catItemsList.length,
+                    itemBuilder: (context, index) => InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => DisplayAvailabeItem(categoryName: catItemsList[index]['catName'].toString())));
+                        },
+                        child: CategoryCircle(
+                            image:
+                                catItemsList[index]['catImage'].toString()))),
               ),
-             
-        
             ],
           ),
         ),

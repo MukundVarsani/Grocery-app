@@ -1,22 +1,24 @@
 // ignore_for_file: unnecessary_const, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/utils/colors.dart';
 
 class ProductDetailPage extends StatefulWidget {
+  final ProductModel product;
+
+  const ProductDetailPage({super.key, required this.product});
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  final String category = "Fruits";
+  String category = "";
 
-  final String description =
-      "Fresh apples picked from the orchard. Juicy and sweet, perfect for snacking or baking.";
-
-  final String imageUrl =
+  String imageUrl =
       "https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w=";
 
+  String productId = "xx-xx-xx-xx";
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
@@ -25,16 +27,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   bool isEditing = true;
 
   @override
+  void initState() {
+    _nameController.text = widget.product.name ?? "Null";
+    _priceController.text = widget.product.price ?? "Null";
+    _quantityController.text = widget.product.stock ?? "Null";
+    _descriptionController.text = widget.product.description ?? "Null";
+    imageUrl = widget.product.imageUrl ?? "Null";
+    category = widget.product.category ?? 'Null';
+    productId = widget.product.id ?? "Null";
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
           color: AppColors.whiteColor,
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
-          'Item Categories',
+        title: Text(
+          _nameController.text,
           style: TextStyle(color: AppColors.whiteColor),
         ),
         backgroundColor: AppColors.themeColor,
@@ -57,7 +71,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
 
             const SizedBox(height: 8),
-            const Row(children: [
+             Row(children: [
               Text(
                 "Product Id:",
                 style: TextStyle(
@@ -65,9 +79,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     fontWeight: FontWeight.w600,
                     color: AppColors.themeColor),
               ),
+            const SizedBox(width: 5),
               Text(
-                " 94395.f.f435.3453",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                productId,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
               ),
             ]),
             const SizedBox(height: 16),
@@ -89,6 +104,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   width: 200,
                   child: TextField(
                     readOnly: isEditing,
+                    keyboardType: TextInputType.name,
                     controller: _nameController,
                     decoration: InputDecoration(
                       labelStyle: TextStyle(
@@ -133,6 +149,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       width: 90,
                       child: TextField(
                         readOnly: isEditing,
+                        keyboardType: TextInputType.number,
                         controller: _priceController,
                         decoration: InputDecoration(
                           labelStyle: TextStyle(
@@ -147,7 +164,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: AppColors.themeColor, width: 2),
+                                color: AppColors.themeColor, width: 1),
                           ),
                         ),
                         style: TextStyle(fontWeight: FontWeight.w500),
@@ -176,6 +193,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       width: 70,
                       child: TextField(
                         readOnly: isEditing,
+                        keyboardType: TextInputType.number,
                         controller: _quantityController,
                         decoration: InputDecoration(
                           labelStyle: TextStyle(
@@ -234,8 +252,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             const SizedBox(height: 10),
             TextField(
               maxLines: 6,
-              readOnly: true,
+              readOnly: isEditing,
               controller: _descriptionController,
+              keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 labelStyle: TextStyle(
                     color: AppColors.themeColor,
@@ -282,9 +301,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ElevatedButton(
                 onPressed: () {
                   if (!isEditing) isEditing = true;
-                  setState(() {
-                    
-                  });
+                  setState(() {});
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.themeColor,
@@ -305,8 +322,4 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(home: ProductDetailPage()));
 }

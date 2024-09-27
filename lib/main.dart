@@ -1,7 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/item_detail_Page.dart';
-import 'package:myshop/pages/onStart/on_board_screen.dart';
+import 'package:myshop/Admin/Common/show_stock_card.dart';
+import 'package:myshop/Admin/Pages/add_Item_to_cat_page.dart';
+import 'package:myshop/Admin/Pages/admin_home_page.dart';
+import 'package:myshop/Admin/Pages/product_detail_Page.dart';
+import 'package:myshop/Admin/Pages/display_avail_Item.dart';
+import 'package:myshop/Admin/Services/admin_services.dart';
+import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
+
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +21,6 @@ void main() async {
           messagingSenderId: "521138022480",
           projectId: "grocerry-app-2fb25",
           storageBucket: "grocerry-app-2fb25.appspot.com"));
-
-  
 
   runApp(const MyApp());
 }
@@ -52,7 +57,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // return const OnBoardScreen();
-    return  ProductDetailPage();
+    // return const OnBoardScree(;
+    return AdminHomePage();
   }
 }

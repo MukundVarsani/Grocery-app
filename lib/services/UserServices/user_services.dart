@@ -7,7 +7,6 @@ import 'package:velocity_x/velocity_x.dart';
 class UserServices {
   UserModel? userModel;
   CollectionReference? _users;
-
   User? _currentUser;
 
   UserServices() {

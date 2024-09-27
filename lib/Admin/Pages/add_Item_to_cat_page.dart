@@ -1,8 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:myshop/Admin/Services/add_Item_To_storage.dart';
+import 'package:myshop/Admin/Services/admin_services.dart';
+import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Resources/Firebase_storage/storage_method.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
@@ -12,7 +12,8 @@ import 'package:uuid/uuid.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AddItemToCart extends StatefulWidget {
-  const AddItemToCart({super.key});
+  final String cat;
+  const AddItemToCart({super.key, this.cat = ""});
 
   @override
   State<AddItemToCart> createState() => _AddItemToCartState();
@@ -29,7 +30,7 @@ class _AddItemToCartState extends State<AddItemToCart> {
   bool isPicAdding = false;
   Uint8List? file;
 
-  final AdminService _adminService = AdminService();
+  late final AdminService _adminService;
 
   String? category;
   final List<String> options = [
@@ -40,12 +41,21 @@ class _AddItemToCartState extends State<AddItemToCart> {
     'Meat'
   ];
 
+  @override
+  void initState() {
+    _adminService = AdminService();
+    if (widget.cat.isNotEmptyAndNotNull) {
+      category = widget.cat;
+    }
+    super.initState();
+  }
+
   void addItemImage() async {
     try {
       isPicAdding = true;
       setState(() {});
       Uint8List pic = await pickImage(ImageSource.gallery);
-      if(pic.isNotEmpty) file = pic;
+      if (pic.isNotEmpty) file = pic;
       isPicAdding = false;
       setState(() {});
     } catch (e) {
@@ -84,18 +94,18 @@ class _AddItemToCartState extends State<AddItemToCart> {
 
       String productId = const Uuid().v4();
 
-      Map<String, dynamic> product = {
-        'id': productId,
-        'category': category,
-        'description': _descriptionController.text.trim(),
-        'name': _nameController.text.trim(),
-        'price': _priceController.text.trim(),
-        'stock': _stockController.text.trim(),
-        'createdAt': DateTime.now().toString(),
-        'updatedAt': DateTime.now().toString(),
-        'imageUrl': itemImageURL,
-        'isAvailable': true,
-      };
+      ProductModel product = ProductModel(
+        id: productId,
+        category: category,
+        description: _descriptionController.text.trim(),
+        name: _nameController.text.trim(),
+        price: _priceController.text.trim(),
+        stock: _stockController.text.trim(),
+        imageUrl: itemImageURL,
+        createdAt: DateTime.now().toString(),
+        updatedAt: DateTime.now().toString(),
+        isAvailable: true,
+      );
 
       await _adminService.addItemToStorage(
         category!,
@@ -109,6 +119,7 @@ class _AddItemToCartState extends State<AddItemToCart> {
       _stockController.clear();
       _priceController.clear();
       _descriptionController.clear();
+      file?.clear();
     }
   }
 
@@ -164,9 +175,11 @@ class _AddItemToCartState extends State<AddItemToCart> {
                                   )
                                 : (file != null && file!.isNotEmpty)
                                     ? ClipRRect(
-                                           borderRadius: BorderRadius.circular(100),
-                                          child: Image.memory(file!,))
-                                      
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: Image.memory(
+                                          file!,
+                                        ))
                                     : Image.asset(
                                         fit: BoxFit.contain,
                                         AppImages.uploadImage,
@@ -261,7 +274,6 @@ class _AddItemToCartState extends State<AddItemToCart> {
                                     if (quantity.isEmptyOrNull) {
                                       return "Fill Quantity Field";
                                     }
-
                                     return null;
                                   },
                                 ),
@@ -306,7 +318,6 @@ class _AddItemToCartState extends State<AddItemToCart> {
                                     if (price.isEmptyOrNull) {
                                       return "Fill Price field";
                                     }
-
                                     return null;
                                   },
                                 ),
