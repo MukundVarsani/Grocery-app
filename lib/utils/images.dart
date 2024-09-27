@@ -29,6 +29,8 @@ class AppImages {
   static const vegetables = "assets/images/vegetables.png";
   static const dairy = "assets/images/dairy.png";
   static const meat = "assets/images/meat.png";
+  static const bakery = "assets/images/bakery.png";
+
 
   // =======================Items================
 
