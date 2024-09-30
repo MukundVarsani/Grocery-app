@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Admin/Common/show_stock_card.dart';
-import 'package:myshop/Admin/Pages/add_Item_to_cat_page.dart';
-import 'package:myshop/Admin/Pages/product_detail_Page.dart';
-import 'package:myshop/Admin/Services/admin_services.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
 import 'package:myshop/services/ProductServices/product_service.dart';

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/product_detail_Page.dart';
 import 'package:myshop/Model/best_selling.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/pages/categoryWiseItem/category_item.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
+import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/services/UserServices/user_services.dart';
 import 'package:myshop/utils/colors.dart';
@@ -34,28 +38,24 @@ class _HomepageState extends State<Homepage> {
     Colors.green,
     Colors.red,
   ];
-  static List<ItemCardModel> bestSellingItems = [
-    ItemCardModel(
-        itemImage: AppImages.pepper, itemName: "Bell Pepper Red", itemPrice: 4),
-    ItemCardModel(
-        itemImage: AppImages.rawMeat, itemName: "Lamb Meat", itemPrice: 45),
-    ItemCardModel(
-        itemImage: AppImages.pepper, itemName: "Bell Pepper ", itemPrice: 20),
-  ];
 
   late UserServices _userServices;
   late UserProvider _userProvider;
+  late ProductService _productService;
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _pinController = TextEditingController();
 
   UserModel? currentUser;
+  List<ProductModel> bestSelling = [];
 
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     _userServices = UserServices();
+    _productService = ProductService();
+
     currentUser = _userProvider.getCurrentUser;
 
     if (currentUser != null) {
@@ -64,8 +64,13 @@ class _HomepageState extends State<Homepage> {
       _countryController.text = currentUser?.address?.country ?? "";
       _pinController.text = currentUser?.address?.postalCode ?? "";
     }
-
+    getBestSelling();
     super.initState();
+  }
+
+  void getBestSelling() async {
+    bestSelling = await _productService.getBestSelling();
+    setState(() {});
   }
 
   void changeAddress() async {
@@ -311,6 +316,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    ProductService().getBestSelling();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.lightModeCardColor,
@@ -525,19 +531,22 @@ class _HomepageState extends State<Homepage> {
                 height: 214,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: bestSellingItems.length,
+                    itemCount: bestSelling.length,
                     itemBuilder: (context, index) => InkWell(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => ItemDetailPage(product: ProductModel(),)));
+                                    builder: (_) => ItemDetailPage(
+                                          product: bestSelling[index],
+                                        )));
                           },
                           child: ItemCard(
-                              price: bestSellingItems[index].itemPrice.toString(),
-                              name: bestSellingItems[index].itemName,
-                              image: 'https://e7.pngegg.com/pngimages/256/163/png-clipart-papua-new-guinea-tomato-vegetable-tomato-red-tomato-illustration-natural-foods-food-thumbnail.png'
-                              ),
+                              price:
+                                  bestSelling[index].price ?? "NA",
+                              name: bestSelling[index].name ?? "NA",
+                              image: bestSelling[index].imageUrl ?? " "
+                                  ),
                         )),
               )
             ],

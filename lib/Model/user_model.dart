@@ -1,5 +1,5 @@
 import 'package:myshop/Model/address.dart';
-import 'package:myshop/utils/images.dart';
+
 
 class UserModel {
   String? id;
@@ -17,7 +17,7 @@ class UserModel {
       {this.id,
       this.name,
       this.email,
-      this.profileImage  = AppImages.userProfileImage,
+      this.profileImage,
       this.phNumber,
       this.role,
       this.createdAt,
@@ -29,7 +29,7 @@ class UserModel {
     id = json['id'];
     name = json['name'];
     email = json['email'];
-    profileImage = json['profileImage'] ?? AppImages.userProfileImage;
+    profileImage = json['profileImage'] ;
     phNumber = json['phNumber'];
     role = json['role'];
     createdAt = json['createdAt'];
@@ -44,7 +44,7 @@ class UserModel {
     data['id'] = id;
     data['name'] = name;
     data['email'] = email;
-    data['profileImage'] = profileImage ?? AppImages.userProfileImage;
+    data['profileImage'] = profileImage ;
     data['phNumber'] = phNumber;
     data['role'] = role;
     data['createdAt'] = createdAt;

@@ -29,14 +29,25 @@ class CartServices {
       DocumentSnapshot ds = await currentUserCartDoc.get();
 
       // If the document exists, get the existing products
-      List<ProductModel> cartProducts = ds.exists
-          ? (CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
-              [])
-          : [];
+      List<ProductModel> cartProducts = [];
+      // List<ProductModel> cartProducts = ds.exists
+      //     ? (CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
+      //         [])
+      //     : [];
 
-     
+      String? createdAt = (ds.exists)
+          ? CartModel.fromJson(ds.data()! as Map<String, dynamic>).createdAt
+          : DateTime.now().toString();
 
-    String? CreatedAt =  (ds.exists) ? CartModel.fromJson(ds.data()! as Map<String, dynamic>).createdAt : DateTime.now().toString(); 
+      CartModel cm = CartModel.fromJson(ds.data()! as Map<String, dynamic>);
+
+      for (var p in cm.products!) {
+        if (product.id == p.id) {
+          quantity = (int.parse(quantity) + int.parse(p.stock!)).toString();
+        } else {
+          cartProducts.add(p);
+        }
+      }
 
       // Add the new product to the list
       product.stock = quantity;
@@ -49,7 +60,8 @@ class CartServices {
                   CartModel.fromJson(snapshot.data()!),
               toFirestore: (CartModel, _) => CartModel.toJson())
           .set(CartModel(
-            createdAt: (CreatedAt != null) ? CreatedAt : DateTime.now().toString() ,
+            createdAt:
+                (createdAt != null) ? createdAt : DateTime.now().toString(),
             id: cartId,
             products: cartProducts,
             updatedAt: DateTime.now().toString(),
@@ -71,7 +83,44 @@ class CartServices {
         ),
       );
     } catch (e) {
-      Vx.log("Error while adding item to storage: ${e.toString()}");
+      Vx.log("Error while adding item to Cart: ${e.toString()}");
+    }
+  }
+
+  Future<List<ProductModel>> getCartProduct() async {
+    List<ProductModel> cartProducts = [];
+    try {
+      DocumentSnapshot ds = await _cartStorage.doc(userId).get();
+      cartProducts = ds.exists
+          ? (CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
+              [])
+          : [];
+    } catch (e) {
+      Vx.log("Error while getting Cart Item: ${e.toString()}");
+    }
+
+    return cartProducts;
+  }
+
+  Future<void> deleteCartProduct(String productId) async {
+    try {
+      DocumentSnapshot ds = await _cartStorage.doc(userId).get();
+
+      List<ProductModel> cartProducts = ds.exists
+          ? CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
+              []
+          : [];
+
+      cartProducts.removeWhere((product) => product.id == productId);
+
+      await _cartStorage.doc(userId).update({
+        'products': cartProducts.map((product) => product.toJson()).toList(),
+        'updatedAt': DateTime.now().toString()
+      });
+
+      Vx.log("Cart Updated");
+    } catch (e) {
+      Vx.log("Error while Deleting item from Cart: ${e.toString()}");
     }
   }
 }

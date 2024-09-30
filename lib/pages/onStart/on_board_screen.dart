@@ -10,7 +10,6 @@ import 'package:myshop/utils/images.dart';
 import 'package:myshop/utils/utils.dart';
 import 'package:myshop/widgets/global/button.dart';
 import 'package:provider/provider.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 // ignore: must_be_immutable
 class OnBoardScreen extends StatefulWidget {
