@@ -76,7 +76,7 @@ class CategoryItemState extends State<CategoryItem> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) =>  ItemDetailPage(product: ProductModel(),)
+                                  builder: (_) =>  ItemDetailPage(product: categoryProduct![i],)
                                       ));
                         },
                         child: ShowStockCard(

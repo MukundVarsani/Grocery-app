@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/services/CartServices/cart_services.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
 import 'package:myshop/widgets/features/item_info_card.dart';
 import 'package:myshop/widgets/global/button.dart';
 
-class ItemDetailPage extends StatelessWidget {
+class ItemDetailPage extends StatefulWidget {
   final ProductModel product;
 
   const ItemDetailPage({super.key, required this.product});
@@ -16,6 +17,27 @@ class ItemDetailPage extends StatelessWidget {
     [AppImages.rating, "4.8", "Reviews"],
     [AppImages.calories, "80 Kcal", "100 Gram"],
   ];
+
+  @override
+  State<ItemDetailPage> createState() => _ItemDetailPageState();
+}
+
+class _ItemDetailPageState extends State<ItemDetailPage> {
+  bool isAdding = false;
+  int quantity = 1;
+  final CartServices _cartServices = CartServices();
+
+  void _addToCart() async {
+    setState(() {
+      isAdding = true;
+    });
+    await _cartServices.addProductToCart(
+        widget.product, context, quantity.toString());
+    setState(() {
+      isAdding = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +85,7 @@ class ItemDetailPage extends StatelessWidget {
                   child: SizedBox(
                       height: 224,
                       width: 249,
-                      child: Image.network(product.imageUrl ?? '',
+                      child: Image.network(widget.product.imageUrl ?? '',
                           fit: BoxFit.contain)),
                 ),
               ),
@@ -72,15 +94,15 @@ class ItemDetailPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
-                shrinkWrap: true,
+              shrinkWrap: true,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      product.name ?? "Na",
-                      style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                      widget.product.name ?? "Na",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 24),
                     ),
                     SizedBox(
                       width: 116,
@@ -94,14 +116,19 @@ class ItemDetailPage extends StatelessWidget {
                                   color: AppColors.lightModeCardColor,
                                   borderRadius: BorderRadius.circular(50)),
                               child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (quantity == 1) return;
+                                  setState(() {
+                                    quantity -= 1;
+                                  });
+                                },
                                 icon: const Icon(Icons.remove),
                                 color: AppColors.greyColor,
                                 iconSize: 20,
                               )),
-                          const Text(
-                            "4",
-                            style: TextStyle(
+                          Text(
+                            quantity.toString(),
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Container(
@@ -111,7 +138,11 @@ class ItemDetailPage extends StatelessWidget {
                                   color: AppColors.themeColor,
                                   borderRadius: BorderRadius.circular(50)),
                               child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                   if (quantity == 10) return;
+                                  quantity += 1;
+                                  setState(() {});
+                                },
                                 icon: const Icon(Icons.add),
                                 color: AppColors.whiteColor,
                                 iconSize: 20,
@@ -124,8 +155,8 @@ class ItemDetailPage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                 Text(
-                  "1Kg, ₹ ${product.price}/-",
+                Text(
+                  "1Kg, ₹ ${widget.product.price}/-",
                   textAlign: TextAlign.start,
                   style: const TextStyle(
                       fontSize: 20,
@@ -136,15 +167,12 @@ class ItemDetailPage extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  product.description ?? "NA",
-                  style:const TextStyle(
+                  widget.product.description ?? "NA",
+                  style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: AppColors.greyColor),
                 ),
-
-         
-              
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     height: 250,
@@ -155,11 +183,11 @@ class ItemDetailPage extends StatelessWidget {
                                 childAspectRatio: 163 / 67,
                                 crossAxisSpacing: 15,
                                 mainAxisSpacing: 10),
-                        itemCount: itemInfo.length,
+                        itemCount: ItemDetailPage.itemInfo.length,
                         itemBuilder: (_, index) => ItemInfoCard(
-                              infoImage: itemInfo[index][0],
-                              infoValue: itemInfo[index][1],
-                              infoDesc: itemInfo[index][2],
+                              infoImage: ItemDetailPage.itemInfo[index][0],
+                              infoValue: ItemDetailPage.itemInfo[index][1],
+                              infoDesc: ItemDetailPage.itemInfo[index][2],
                             )))
               ],
             ),
@@ -170,7 +198,8 @@ class ItemDetailPage extends StatelessWidget {
         margin: const EdgeInsets.only(right: 10),
         width: 360,
         height: 53,
-        child: PrimaryButton(title: "Add to cart", onPressed: () {}),
+        child: PrimaryButton(
+            isLoading: isAdding, title: "Add to cart", onPressed: _addToCart),
       ),
     );
   }
