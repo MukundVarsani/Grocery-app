@@ -53,22 +53,7 @@ class CategoryItemState extends State<CategoryItem> {
             icon: const BackButtonIcon(),
             color: AppColors.whiteColor,
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => AddItemToCart(
-                                cat: widget.categoryName,
-                              )));
-                },
-                icon: const Icon(
-                  Icons.add,
-                  size: 28,
-                  color: AppColors.whiteColor,
-                ))
-          ],
+       
           backgroundColor: AppColors.themeColor,
           title: const Text("Available Stock",
               style: TextStyle(
@@ -91,7 +76,7 @@ class CategoryItemState extends State<CategoryItem> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => const ItemDetailPage()
+                                  builder: (_) =>  ItemDetailPage(product: ProductModel(),)
                                       ));
                         },
                         child: ShowStockCard(

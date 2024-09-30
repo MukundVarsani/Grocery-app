@@ -1,7 +1,9 @@
+import 'package:myshop/Model/product_model.dart';
+
 class CartModel {
   String? id;
   String? userId;
-  List<Products>? products;
+  List<ProductModel>? products;
   String? createdAt;
   String? updatedAt;
 
@@ -12,9 +14,9 @@ class CartModel {
     id = json['id'];
     userId = json['userId'];
     if (json['products'] != null) {
-      products = <Products>[];
+      products = <ProductModel>[];
       json['products'].forEach((v) {
-        products!.add(Products.fromJson(v));
+        products!.add(ProductModel.fromJson(v));
       });
     }
     createdAt = json['createdAt'];
@@ -34,21 +36,3 @@ class CartModel {
   }
 }
 
-class Products {
-  String? productId;
-  String? quantity;
-
-  Products({this.productId, this.quantity});
-
-  Products.fromJson(Map<String, dynamic> json) {
-    productId = json['productId'];
-    quantity = json['quantity'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['productId'] = productId;
-    data['quantity'] = quantity;
-    return data;
-  }
-}

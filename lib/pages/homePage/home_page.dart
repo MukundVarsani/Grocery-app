@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Model/best_selling.dart';
+import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/pages/categoryWiseItem/category_item.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
@@ -21,7 +22,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
- static const List<Map<String, String>> catItemsList = [
+  static const List<Map<String, String>> catItemsList = [
     {"catName": "Fruits", "catImage": AppImages.fruits},
     {"catName": "Vegetables", "catImage": AppImages.vegetables},
     {"catName": "Dairy", "catImage": AppImages.dairy},
@@ -451,6 +452,7 @@ class _HomepageState extends State<Homepage> {
               SizedBox(
                 height: 148,
                 child: ListView.builder(
+                    shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemCount: offerCardCOlors.length,
                     itemBuilder: (context, index) =>
@@ -483,12 +485,19 @@ class _HomepageState extends State<Homepage> {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: catItemsList.length,
-                    itemBuilder: (context, index) =>
-                        GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (_)=> CategoryItem(categoryName: catItemsList[index]['catName'] ?? '') ));
-                            },
-                          child: CategoryCircle(image: catItemsList[index]['catImage'] ?? AppImages.fruits))),
+                    itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => CategoryItem(
+                                      categoryName: catItemsList[index]
+                                              ['catName'] ??
+                                          '')));
+                        },
+                        child: CategoryCircle(
+                            image: catItemsList[index]['catImage'] ??
+                                AppImages.fruits))),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -522,12 +531,13 @@ class _HomepageState extends State<Homepage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const ItemDetailPage()));
+                                    builder: (_) => ItemDetailPage(product: ProductModel(),)));
                           },
                           child: ItemCard(
-                              price: bestSellingItems[index].itemPrice,
+                              price: bestSellingItems[index].itemPrice.toString(),
                               name: bestSellingItems[index].itemName,
-                              image: bestSellingItems[index].itemImage),
+                              image: 'https://e7.pngegg.com/pngimages/256/163/png-clipart-papua-new-guinea-tomato-vegetable-tomato-red-tomato-illustration-natural-foods-food-thumbnail.png'
+                              ),
                         )),
               )
             ],

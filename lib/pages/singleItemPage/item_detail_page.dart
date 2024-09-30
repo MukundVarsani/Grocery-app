@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
 import 'package:myshop/widgets/features/item_info_card.dart';
 import 'package:myshop/widgets/global/button.dart';
 
-class ItemDetailPage extends StatefulWidget {
-  const ItemDetailPage({super.key});
+class ItemDetailPage extends StatelessWidget {
+  final ProductModel product;
 
-  @override
-  State<ItemDetailPage> createState() => _ItemDetailPageState();
-}
+  const ItemDetailPage({super.key, required this.product});
 
-class _ItemDetailPageState extends State<ItemDetailPage> {
   static const List<List<String>> itemInfo = [
     [AppImages.lotus, "100%", "Organic"],
     [AppImages.calender, "1 Year", "Expiration"],
@@ -35,9 +33,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
               borderRadius: BorderRadius.circular(50)),
           child: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => {
-                 Navigator.pop(context)
-            },
+            onPressed: () => {Navigator.pop(context)},
           ),
         ),
         actions: [
@@ -53,8 +49,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        shrinkWrap: true,
         children: [
           SizedBox(
             width: 400,
@@ -67,24 +63,24 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   child: SizedBox(
                       height: 224,
                       width: 249,
-                      child:
-                          Image.asset(AppImages.brocolli, fit: BoxFit.contain)),
+                      child: Image.network(product.imageUrl ?? '',
+                          fit: BoxFit.contain)),
                 ),
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+                shrinkWrap: true,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Arabic Ginger",
+                    Text(
+                      product.name ?? "Na",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                     ),
                     SizedBox(
                       width: 116,
@@ -128,10 +124,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  "1Kg, 4\$",
+                 Text(
+                  "1Kg, ₹ ${product.price}/-",
                   textAlign: TextAlign.start,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.red),
@@ -139,13 +135,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  "Ginger is a flowering plant whose rhizome, ginger root or ginger, is widely used as a spice and a folk medicine.",
-                  style: TextStyle(
+                Text(
+                  product.description ?? "NA",
+                  style:const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: AppColors.greyColor),
                 ),
+
+         
+              
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     height: 250,
@@ -171,8 +170,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         margin: const EdgeInsets.only(right: 10),
         width: 360,
         height: 53,
-        child: PrimaryButton(
-          title: "Add to cart", onPressed: () {}),
+        child: PrimaryButton(title: "Add to cart", onPressed: () {}),
       ),
     );
   }

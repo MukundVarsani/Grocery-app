@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myshop/utils/colors.dart';
 
 class ItemCard extends StatelessWidget {
-  final double price;
+  final String price;
   final String name;
   final String image;
 
@@ -25,7 +25,9 @@ class ItemCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset(image),
+          SizedBox(
+            height: 100,
+            child: Image.network(image, fit: BoxFit.contain,)),
           Column(
             children: [
               Align(
@@ -41,7 +43,7 @@ class ItemCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "1Kg, ${price.toInt()}\$",
+                      "1Kg, ₹ $price/-",
                       textAlign: TextAlign.start,
                       style: const TextStyle(
                           fontSize: 16,
