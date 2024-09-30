@@ -15,7 +15,6 @@ class AdminService {
 
 
 
-
   Future<void> addItemToStorage(String category, String name, String id,
       ProductModel product, BuildContext context) async {
     try {
@@ -87,7 +86,6 @@ class AdminService {
 
     return catSortProduct;
   }
-
 
 
 }

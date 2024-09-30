@@ -50,16 +50,7 @@ class ItemCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Colors.red),
                     ),
-                    // Container(
-                    //     height: 36,
-                    //     width: 36,
-                    //     decoration: BoxDecoration(
-                    //         color: AppColors.themeColor,
-                    //         borderRadius: BorderRadius.circular(50)),
-                    //     child: const Icon(
-                    //       Icons.add,
-                    //       color: AppColors.whiteColor,
-                    //     )),
+            
                   ],
                 
               ),

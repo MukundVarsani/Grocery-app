@@ -8,19 +8,27 @@ import 'package:uuid/uuid.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CartServices {
-  String? userId;
-  late CollectionReference _cartStorage;
+  final String? userId;
+  late final CollectionReference _cartStorage;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  CartServices() {
-    String? id = FirebaseAuth.instance.currentUser?.uid;
-    _cartStorage = FirebaseFirestore.instance.collection('Users-Cart');
-    if (id != null && id.isNotEmpty) {
-      userId = id;
-    }
-  }
+
+  // CartServices() {
+
+  //   String? id = FirebaseAuth.instance.currentUser?.uid;
+  //   _cartStorage = FirebaseFirestore.instance.collection('Users-Cart');
+  //   if (id != null && id.isNotEmpty) {
+  //     userId = id;
+  //   }
+  // }
+
+  CartServices()
+      : userId = FirebaseAuth.instance.currentUser?.uid,
+        _cartStorage = FirebaseFirestore.instance.collection('Users-Cart');
 
   Future<void> addProductToCart(
       ProductModel product, BuildContext context, String quantity) async {
+    if (userId == null) return;
+
     try {
       String cartId = const Uuid().v4();
       DocumentReference currentUserCartDoc = _cartStorage.doc(userId);
@@ -88,28 +96,29 @@ class CartServices {
   }
 
   Future<List<ProductModel>> getCartProduct() async {
-    List<ProductModel> cartProducts = [];
+    if (userId == null) return [];
+
     try {
       DocumentSnapshot ds = await _cartStorage.doc(userId).get();
-      cartProducts = ds.exists
+      return ds.exists
           ? (CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
               [])
           : [];
     } catch (e) {
       Vx.log("Error while getting Cart Item: ${e.toString()}");
+      return [];
     }
-
-    return cartProducts;
   }
 
   Future<void> deleteCartProduct(String productId) async {
+    if (userId == null) return;
     try {
       DocumentSnapshot ds = await _cartStorage.doc(userId).get();
 
-      List<ProductModel> cartProducts = ds.exists
-          ? CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
-              []
-          : [];
+      if (!ds.exists) return;
+
+      List<ProductModel> cartProducts =
+          CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ?? [];
 
       cartProducts.removeWhere((product) => product.id == productId);
 
@@ -118,7 +127,6 @@ class CartServices {
         'updatedAt': DateTime.now().toString()
       });
 
-      Vx.log("Cart Updated");
     } catch (e) {
       Vx.log("Error while Deleting item from Cart: ${e.toString()}");
     }

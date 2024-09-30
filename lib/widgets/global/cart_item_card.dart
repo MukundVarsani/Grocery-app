@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myshop/utils/colors.dart';
 
 class CartItemCard extends StatelessWidget {
   final String quant;

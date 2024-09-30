@@ -1,11 +1,9 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
 import 'package:myshop/services/CartServices/cart_services.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/widgets/global/cart_item_card.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class MyCartScreen extends StatefulWidget {
   const MyCartScreen({super.key});
@@ -16,7 +14,7 @@ class MyCartScreen extends StatefulWidget {
 
 class _MyCartScreenState extends State<MyCartScreen> {
   List<ProductModel> cartProducts = [];
-  CartServices _cartServices = CartServices();
+  final CartServices _cartServices = CartServices();
 
   @override
   void initState() {
@@ -31,7 +29,6 @@ class _MyCartScreenState extends State<MyCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -61,8 +58,10 @@ class _MyCartScreenState extends State<MyCartScreen> {
                             builder: (_) => ItemDetailPage(product: product)));
                   },
                   child: Dismissible(
-                    onDismissed: (direction) async{
-                      if(product.id != null) await _cartServices.deleteCartProduct(product.id!);
+                    onDismissed: (direction) async {
+                      if (product.id != null) {
+                        await _cartServices.deleteCartProduct(product.id!);
+                      }
 
                       setState(() {
                         cartProducts.removeAt(index);
@@ -76,10 +75,13 @@ class _MyCartScreenState extends State<MyCartScreen> {
                         color: AppColors.themeColor,
                         child: const Align(
                           alignment: Alignment.centerRight,
-                          child: const Icon(
-                            Icons.delete_forever_outlined,
-                            color: Colors.red,
-                            size: 32,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 20),
+                            child: Icon(
+                              Icons.delete_outline,
+                              color: AppColors.whiteColor,
+                              size: 32,
+                            ),
                           ),
                         )),
                     direction: DismissDirection.endToStart,
