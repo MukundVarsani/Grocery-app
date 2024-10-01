@@ -38,22 +38,22 @@ class CartServices {
 
       // If the document exists, get the existing products
       List<ProductModel> cartProducts = [];
-      // List<ProductModel> cartProducts = ds.exists
-      //     ? (CartModel.fromJson(ds.data()! as Map<String, dynamic>).products ??
-      //         [])
-      //     : [];
 
       String? createdAt = (ds.exists)
           ? CartModel.fromJson(ds.data()! as Map<String, dynamic>).createdAt
           : DateTime.now().toString();
 
-      CartModel cm = CartModel.fromJson(ds.data()! as Map<String, dynamic>);
+      CartModel cm = CartModel();
 
-      for (var p in cm.products!) {
-        if (product.id == p.id) {
-          quantity = (int.parse(quantity) + int.parse(p.stock!)).toString();
-        } else {
-          cartProducts.add(p);
+      if (ds.exists) {
+        cm = CartModel.fromJson(ds.data()! as Map<String, dynamic>);
+
+        for (var p in cm.products!) {
+          if (product.id == p.id) {
+            quantity = (int.parse(quantity) + int.parse(p.stock!)).toString();
+          } else {
+            cartProducts.add(p);
+          }
         }
       }
 
@@ -68,8 +68,7 @@ class CartServices {
                   CartModel.fromJson(snapshot.data()!),
               toFirestore: (CartModel, _) => CartModel.toJson())
           .set(CartModel(
-            createdAt:
-                (createdAt != null) ? createdAt : DateTime.now().toString(),
+            createdAt: createdAt,
             id: cartId,
             products: cartProducts,
             updatedAt: DateTime.now().toString(),
@@ -126,7 +125,15 @@ class CartServices {
         'products': cartProducts.map((product) => product.toJson()).toList(),
         'updatedAt': DateTime.now().toString()
       });
+    } catch (e) {
+      Vx.log("Error while Deleting item from Cart: ${e.toString()}");
+    }
+  }
 
+  Future<void> emptyCart() async {
+    if (userId == null) return;
+    try {
+      await _cartStorage.doc(userId).delete();
     } catch (e) {
       Vx.log("Error while Deleting item from Cart: ${e.toString()}");
     }

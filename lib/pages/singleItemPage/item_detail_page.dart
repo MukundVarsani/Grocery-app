@@ -8,7 +8,7 @@ import 'package:myshop/widgets/global/button.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final ProductModel product;
-
+  
   const ItemDetailPage({super.key, required this.product});
 
   static const List<List<String>> itemInfo = [

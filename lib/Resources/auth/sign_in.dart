@@ -3,9 +3,10 @@
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:myshop/Admin/Pages/admin_home_page.dart';
+import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/Resources/auth/sign_up.dart';
-import 'package:myshop/pages/bottom_navigation_bar.dart';
+import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/AuthServices/auth_method.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/utils/colors.dart';
@@ -72,7 +73,7 @@ class _SignInPageState extends State<SignInPage> {
         
 
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) =>  isAdmin ? const AdminHomePage() : const BottomNavigationBare()));
+            MaterialPageRoute(builder: (_) =>  isAdmin ? const AdminNavigationBar() : const UserNavigationBar()));
 
         emailController.clear();
         passwordController.clear();

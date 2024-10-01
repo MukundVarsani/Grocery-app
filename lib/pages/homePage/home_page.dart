@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/product_detail_Page.dart';
-import 'package:myshop/Model/best_selling.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/pages/categoryWiseItem/category_item.dart';
@@ -17,6 +13,8 @@ import 'package:myshop/widgets/global/category_avatar.dart';
 import 'package:myshop/widgets/global/offer_card.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
+
+
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});

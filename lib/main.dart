@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/admin_home_page.dart';
+import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/pages/onStart/splash_screen.dart';
+
 
 
 import 'package:myshop/services/Provider/user_provider.dart';
@@ -52,6 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // return const OnBoardScree(;
-    return const SplashScreen();
+    return  const SplashScreen();
   }
 }

@@ -7,7 +7,6 @@ import 'package:velocity_x/velocity_x.dart';
 
 class AdminService {
   late CollectionReference _productStorage;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AdminService()
       : _productStorage =

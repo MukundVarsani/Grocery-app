@@ -5,14 +5,14 @@ import 'package:myshop/pages/myCartPage/my_cart_screen.dart';
 import 'package:myshop/pages/profilePage/profile.dart';
 import 'package:myshop/utils/colors.dart';
 
-class BottomNavigationBare extends StatefulWidget {
-  const BottomNavigationBare({super.key});
+class UserNavigationBar extends StatefulWidget {
+  const UserNavigationBar({super.key});
 
   @override
-  State<BottomNavigationBare> createState() => _BottomNavigationBareState();
+  State<UserNavigationBar> createState() => _UserNavigationBarState();
 }
 
-class _BottomNavigationBareState extends State<BottomNavigationBare> {
+class _UserNavigationBarState extends State<UserNavigationBar> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
@@ -48,10 +48,7 @@ class _BottomNavigationBareState extends State<BottomNavigationBare> {
             icon: iconBorder(Icons.shopping_cart, 2),
             label: '',
           ),
-          //  BottomNavigationBarItem(
-          //   icon: iconBorder(Icons.notification_add, 3),
-          //   label: '',
-          // ),
+
            BottomNavigationBarItem(
             icon: iconBorder(Icons.person, 3),
             label: '',

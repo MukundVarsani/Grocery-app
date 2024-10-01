@@ -1,9 +1,10 @@
 import 'package:myshop/Model/address.dart';
+import 'package:myshop/Model/product_model.dart';
 
 class OrderModel {
   String? id;
   String? userId;
-  List<Products>? products;
+  List<ProductModel>? products;
   String? totalAmount;
   String? orderStatus;
   String? createdAt;
@@ -24,9 +25,9 @@ class OrderModel {
     id = json['id'];
     userId = json['userId'];
     if (json['products'] != null) {
-      products = <Products>[];
+      products = <ProductModel>[];
       json['products'].forEach((v) {
-        products!.add( Products.fromJson(v));
+        products!.add( ProductModel.fromJson(v));
       });
     }
     totalAmount = json['totalAmount'];
@@ -56,21 +57,3 @@ class OrderModel {
   }
 }
 
-class Products {
-  String? productId;
-  String? quantity;
-
-  Products({this.productId, this.quantity});
-
-  Products.fromJson(Map<String, dynamic> json) {
-    productId = json['productId'];
-    quantity = json['quantity'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  <String, dynamic>{};
-    data['productId'] = productId;
-    data['quantity'] = quantity;
-    return data;
-  }
-}
