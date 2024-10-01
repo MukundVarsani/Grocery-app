@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/display_avail_Item.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/pages/allItemPage/all_items.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
+import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/CartServices/cart_services.dart';
 import 'package:myshop/services/OrderServices/order_services.dart';
 import 'package:myshop/utils/colors.dart';
@@ -48,102 +51,126 @@ class _MyCartScreenState extends State<MyCartScreen> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          ListView.builder(
-              itemCount: cartProducts.length,
-              shrinkWrap: true,
-              itemBuilder: (_, index) {
-                ProductModel product = cartProducts[index];
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    ItemDetailPage(product: product)));
-                      },
-                      child: Dismissible(
-                        onDismissed: (direction) async {
-                          if (product.id != null) {
-                            await _cartServices.deleteCartProduct(product.id!);
-                          }
-
-                          setState(() {
-                            cartProducts.removeAt(index);
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              duration: const Duration(seconds: 1),
-                              content:
-                                  Text('${product.name} Removed from cart')));
-                        },
-                        key: Key(product.id ?? "123"),
-                        background: Container(
-                            padding: const EdgeInsets.all(12),
-                            color: AppColors.themeColor,
-                            child: const Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 20),
-                                child: Icon(
-                                  Icons.delete_outline,
-                                  color: AppColors.whiteColor,
-                                  size: 32,
-                                ),
-                              ),
-                            )),
-                        direction: DismissDirection.endToStart,
-                        child: CartItemCard(
-                          imageUrl: product.imageUrl ?? "",
-                          quant: product.stock ?? "NA",
-                          price: product.price ?? "NO",
-                          name: product.name ?? "NA",
-                        ),
-                      ),
+      body: cartProducts.isEmpty
+          ? SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+                  
+                children: [
+                  const Text("Is cart Empty? ", style: TextStyle(color: AppColors.themeColor, fontSize: 24, fontWeight: FontWeight.w500,)),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                      width: 40,
+                      height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.themeColor,
+                      borderRadius: BorderRadius.circular(100)
                     ),
-                    if (index < cartProducts.length - 1)
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 10)
-                            .copyWith(top: 5),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1,
-                                    color:
-                                        Color.fromARGB(255, 235, 232, 232)))),
-                      ),
-                  ],
-                );
-              }),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: PrimaryButton(
-                isLoading: isOrdering,
-                title: "Place order",
-                onPressed: () async {
-
-                  setState(() {
-                    isOrdering = true;
-                  });
-
-                  bool isPlaced =
-                      await _orderServices.makeOrder(cartProducts, context);
-              setState(() {
-                    isOrdering = false;
-                  });
-                  if (isPlaced) {
-                    _cartServices.emptyCart();
-                    setState(() {
-                      getAllCartProducts();
-                    });
-                  }
-                }),
+                    child: IconButton(onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=>const UserNavigationBar(index:1 ,)));
+                    }, icon: const  Icon(Icons.add,color: AppColors.whiteColor,)))
+                ],
+              ),
           )
-        ],
-      ),
+          : Column(
+              children: [
+                ListView.builder(
+                    itemCount: cartProducts.length,
+                    shrinkWrap: true,
+                    itemBuilder: (_, index) {
+                      ProductModel product = cartProducts[index];
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          ItemDetailPage(product: product)));
+                            },
+                            child: Dismissible(
+                              onDismissed: (direction) async {
+                                if (product.id != null) {
+                                  await _cartServices
+                                      .deleteCartProduct(product.id!);
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        duration: const Duration(seconds: 1),
+                                        content: Text(
+                                            '${product.name} Removed from cart')));
+                                setState(() {
+                                  cartProducts.removeAt(index);
+                                });
+                              },
+                              key: Key(product.id ?? "123"),
+                              background: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  color: AppColors.themeColor,
+                                  child: const Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 20),
+                                      child: Icon(
+                                        Icons.delete_outline,
+                                        color: AppColors.whiteColor,
+                                        size: 32,
+                                      ),
+                                    ),
+                                  )),
+                              direction: DismissDirection.endToStart,
+                              child: CartItemCard(
+                                imageUrl: product.imageUrl ?? "",
+                                quant: product.stock ?? "NA",
+                                price: product.price ?? "NO",
+                                name: product.name ?? "NA",
+                              ),
+                            ),
+                          ),
+                          if (index < cartProducts.length - 1)
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 10)
+                                  .copyWith(top: 5),
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          width: 1,
+                                          color: Color.fromARGB(
+                                              255, 235, 232, 232)))),
+                            ),
+                        ],
+                      );
+                    }),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: PrimaryButton(
+                      isLoading: isOrdering,
+                      title: "Place order",
+                      onPressed: () async {
+                        setState(() {
+                          isOrdering = true;
+                        });
+
+                        bool isPlaced = await _orderServices.makeOrder(
+                            cartProducts, context);
+                        setState(() {
+                          isOrdering = false;
+                        });
+                        if (isPlaced) {
+                          _cartServices.emptyCart();
+                          setState(() {
+                            getAllCartProducts();
+                          });
+                        }
+                      }),
+                )
+              ],
+            ),
     );
   }
 }

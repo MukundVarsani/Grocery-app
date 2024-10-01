@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myshop/Model/address.dart';
 import 'package:myshop/Model/order_model.dart';
@@ -12,6 +13,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 class OrderServices {
   final CollectionReference _orderStorage;
+  final String? userid;
   final Address shippingAddress = Address(
     city: "Bhuj",
     country: "India",
@@ -21,7 +23,8 @@ class OrderServices {
   late final UserProvider _userServices;
 
   OrderServices()
-      : _orderStorage = FirebaseFirestore.instance.collection('User-Orders');
+      : userid = FirebaseAuth.instance.currentUser?.uid,
+        _orderStorage = FirebaseFirestore.instance.collection('User-Orders');
 
   Future<bool> makeOrder(
       List<ProductModel> cartProducts, BuildContext context) async {
@@ -79,7 +82,7 @@ class OrderServices {
           orderProducts.add(product);
         }
       }
-      Vx.log(total);
+
       for (ProductModel product in cartProducts) {
         total = total + (int.parse(product.price!) * int.parse(product.stock!));
       }
@@ -97,7 +100,7 @@ class OrderServices {
           .set(OrderModel(
               createdAt: createdAt,
               id: orderId,
-              orderStatus: "Pending",
+              orderStatus: "1",
               products: orderProducts,
               shippingAddress: shippingAddress,
               totalAmount: total.toString(),
@@ -124,5 +127,19 @@ class OrderServices {
     }
 
     return false;
+  }
+
+  Future<OrderModel> getOrder() async {
+    if (userid == null) return OrderModel();
+    try {
+      DocumentSnapshot ds = await _orderStorage.doc(userid).get();
+
+      return ds.exists
+          ? (OrderModel.fromJson(ds.data()! as Map<String, dynamic>))
+          : OrderModel();
+    } catch (e) {
+      Vx.log("Error while Getting Order product: ${e.toString()}");
+      return OrderModel();
+    }
   }
 }

@@ -3,6 +3,7 @@ import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/pages/categoryWiseItem/category_item.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
+import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/services/UserServices/user_services.dart';
@@ -314,7 +315,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    ProductService().getBestSelling();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.lightModeCardColor,
@@ -466,20 +467,25 @@ class _HomepageState extends State<Homepage> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ).copyWith(top: 40, bottom: 20),
-                child: const Row(
+                child:  Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                   const Text(
                       "Categories 😋",
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      "See all",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.themeColor),
+                    GestureDetector(
+                          onTap: (){
+                             Navigator.push(context, MaterialPageRoute(builder: (_)=>const UserNavigationBar(index:1 ,)));
+                          },
+                      child:const Text(
+                        "See all",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.themeColor),
+                      ),
                     )
                   ],
                 ),

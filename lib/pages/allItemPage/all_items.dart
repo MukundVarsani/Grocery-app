@@ -41,7 +41,7 @@ class _AllItemsPageState extends State<AllItemsPage> {
           onPressed: () {},
         ),
         title: const Text(
-          "Vegetables 🌽",
+          "All Items",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],

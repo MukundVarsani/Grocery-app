@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop/pages/OrderPage/my_order.dart';
 import 'package:myshop/pages/allItemPage/all_items.dart';
 import 'package:myshop/pages/homePage/home_page.dart';
 import 'package:myshop/pages/myCartPage/my_cart_screen.dart';
@@ -6,23 +7,30 @@ import 'package:myshop/pages/profilePage/profile.dart';
 import 'package:myshop/utils/colors.dart';
 
 class UserNavigationBar extends StatefulWidget {
-  const UserNavigationBar({super.key});
+ final int index;
+   const UserNavigationBar({super.key, this.index = 0 });
 
   @override
   State<UserNavigationBar> createState() => _UserNavigationBarState();
 }
 
 class _UserNavigationBarState extends State<UserNavigationBar> {
-  int _selectedIndex = 0;
+  late int _selectedIndex ;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Homepage(),
-    AllItemsPage(),
-    MyCartScreen(),
-    ProfileScreen(),
-    // Text('Profile Page',
-    //     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+  static final List<Widget> _widgetOptions = <Widget>[
+    const Homepage(),
+    const AllItemsPage(),
+    const MyCartScreen(),
+    const ProfileScreen(),
+    MyOrder(),
+    
   ];
+
+  @override
+  void initState() {
+    _selectedIndex = widget.index;
+    super.initState();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,21 +44,24 @@ class _UserNavigationBarState extends State<UserNavigationBar> {
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-           BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: iconBorder(Icons.home, 0),
             label: '',
           ),
-           BottomNavigationBarItem(
-            icon:iconBorder(Icons.menu, 1),
+          BottomNavigationBarItem(
+            icon: iconBorder(Icons.menu, 1),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: iconBorder(Icons.shopping_cart, 2),
             label: '',
           ),
-
-           BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: iconBorder(Icons.person, 3),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: iconBorder(Icons.money, 4),
             label: '',
           ),
         ],
@@ -70,12 +81,14 @@ class _UserNavigationBarState extends State<UserNavigationBar> {
     return Container(
         height: 48,
         width: 48,
-        decoration: _selectedIndex==index?   BoxDecoration(
-            color: AppColors.themeColor,
-            borderRadius: BorderRadius.circular(50)): null,
-        child:  Icon(
+        decoration: _selectedIndex == index
+            ? BoxDecoration(
+                color: AppColors.themeColor,
+                borderRadius: BorderRadius.circular(50))
+            : null,
+        child: Icon(
           icon,
-          size: _selectedIndex == index? 30 : null,
+          size: _selectedIndex == index ? 30 : null,
         ));
   }
 }
