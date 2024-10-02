@@ -4,6 +4,7 @@ import 'package:myshop/Admin/Pages/add_Item_to_cat_page.dart';
 import 'package:myshop/Admin/Pages/display_avail_Item.dart';
 import 'package:myshop/Admin/Pages/product_detail_Page.dart';
 import 'package:myshop/Admin/Pages/see_all_items_page.dart';
+import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/Resources/auth/sign_in.dart';
@@ -77,6 +78,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        
         backgroundColor: AppColors.lightModeCardColor,
         toolbarHeight: 0,
       ),
@@ -145,10 +147,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => const SeeAllItemsPage()));
+                              builder: (_) => const AdminNavigationBar(index: 1,)));
                     },
                     child: const Text(
                       "See all",

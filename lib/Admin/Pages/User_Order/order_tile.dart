@@ -31,7 +31,7 @@ class OrderTile extends StatelessWidget {
         break;
     }
     return Container(
-      color: const Color.fromARGB(255, 134, 220, 159),
+      color: const Color.fromARGB(255, 182, 255, 203),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       height: 70,
       child:  Row(

@@ -4,6 +4,7 @@ import 'package:myshop/Admin/Pages/User_Order/order_tile.dart';
 import 'package:myshop/Admin/Pages/User_Order/user_order_page.dart';
 import 'package:myshop/Admin/Services/admin_order_service.dart';
 import 'package:myshop/Model/order_model.dart';
+import 'package:myshop/utils/colors.dart';
 
 class AllUserOrderPage extends StatefulWidget {
   const AllUserOrderPage({super.key});
@@ -30,13 +31,20 @@ class _AllUserOrderPageState extends State<AllUserOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("All Orders"),
+          backgroundColor: AppColors.themeColor,
+          title: const Text(
+            "All Orders",
+            style: TextStyle(
+                fontWeight: FontWeight.w500, color: AppColors.whiteColor),
+          ),
           centerTitle: true,
         ),
         body: ListView.builder(
+            padding:EdgeInsets.symmetric(vertical: 16) ,
             itemCount: allOrders.length,
             itemBuilder: (_, index) {
               return Column(
+
                 children: [
                   InkWell(
                       onTap: () {

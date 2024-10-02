@@ -46,15 +46,19 @@ class _MyCartScreenState extends State<MyCartScreen> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: AppColors.themeColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 20),
-          onPressed: () {},
-        ),
-        title: const Text(
-          "Cart 🛒",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+       
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Cart ",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.whiteColor),
+            ),
+
+            Icon(Icons.shopping_cart, color: AppColors.whiteColor,)
+          ],
         ),
         centerTitle: true,
       ),

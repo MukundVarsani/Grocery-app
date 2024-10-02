@@ -45,35 +45,23 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       appBar: AppBar(
         toolbarHeight: 50,
         leadingWidth: 70,
-        backgroundColor: AppColors.lightModeCardColor,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 20),
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-              color: AppColors.whiteColor,
-              borderRadius: BorderRadius.circular(50)),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back),
+        backgroundColor: AppColors.themeColor,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color:AppColors.whiteColor ,),
             onPressed: () => {Navigator.pop(context)},
           ),
-        ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 20),
-            decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(50)),
-            child: IconButton(
-              icon: const Icon(Icons.search),
+          IconButton(
+              icon: const Icon(Icons.search, color: AppColors.whiteColor,),
               onPressed: () {},
             ),
-          ),
+          
         ],
       ),
       body: ListView(
         shrinkWrap: true,
         children: [
+    
           SizedBox(
             width: 400,
             height: 300,
@@ -195,7 +183,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ],
       ),
       floatingActionButton: Container(
-        margin: const EdgeInsets.only(right: 10),
+        // margin: const EdgeInsets.only(right: 10),
         width: 360,
         height: 53,
         child: PrimaryButton(

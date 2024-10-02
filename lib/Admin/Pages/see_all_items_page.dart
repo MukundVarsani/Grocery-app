@@ -34,20 +34,17 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: AppColors.themeColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
-          "Vegetables 🌽",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          "All Products",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.whiteColor),
         ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search, color: AppColors.whiteColor,))],
         centerTitle: true,
       ),
       body: GridView.builder(
+        padding: EdgeInsets.symmetric(vertical: 16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 20,

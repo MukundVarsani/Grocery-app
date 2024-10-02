@@ -8,24 +8,22 @@ import 'package:myshop/pages/profilePage/profile.dart';
 import 'package:myshop/utils/colors.dart';
 
 class UserNavigationBar extends StatefulWidget {
- final int index;
-   const UserNavigationBar({super.key, this.index = 0 });
+  final int index;
+  const UserNavigationBar({super.key, this.index = 0});
 
   @override
   State<UserNavigationBar> createState() => _UserNavigationBarState();
 }
 
 class _UserNavigationBarState extends State<UserNavigationBar> {
-  late int _selectedIndex ;
+  late int _selectedIndex;
 
   static final List<Widget> _widgetOptions = <Widget>[
     const Homepage(),
     const AllItemsPage(),
     const MyCartScreen(),
-    const ProfileScreen(),
     MyOrder(),
-
-    
+    const ProfileScreen(),
   ];
 
   @override
@@ -59,11 +57,11 @@ class _UserNavigationBarState extends State<UserNavigationBar> {
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: iconBorder(Icons.person, 3),
+            icon: iconBorder(Icons.money, 3),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: iconBorder(Icons.money, 4),
+            icon: iconBorder(Icons.person, 4),
             label: '',
           ),
         ],

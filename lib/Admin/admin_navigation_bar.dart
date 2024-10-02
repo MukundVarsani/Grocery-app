@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Admin/Pages/User_Order/all_user_order_page.dart';
 import 'package:myshop/Admin/Pages/admin_home_page.dart';
+import 'package:myshop/Admin/Pages/see_all_items_page.dart';
 import 'package:myshop/utils/colors.dart';
 
 class AdminNavigationBar extends StatefulWidget {
-  const AdminNavigationBar({super.key});
+  final int index;
+  const AdminNavigationBar({super.key, this.index = 0});
 
   @override
   State<AdminNavigationBar> createState() => _AdminNavigationBarState();
 }
 
 class _AdminNavigationBarState extends State<AdminNavigationBar> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   static const List<Widget> _widgetOptions = <Widget>[
     AdminHomePage(),
+    SeeAllItemsPage(),
     AllUserOrderPage(),
-    Text("Home 3"),
     Text("Home 4"),
   ];
 
@@ -24,6 +26,12 @@ class _AdminNavigationBarState extends State<AdminNavigationBar> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    _selectedIndex = widget.index;
+    super.initState();
   }
 
   @override
@@ -57,10 +65,10 @@ class _AdminNavigationBarState extends State<AdminNavigationBar> {
 
         // Ensure selected label turns green
         selectedLabelStyle: TextStyle(
-          color: Colors.green,  // Green for active label
+          color: Colors.green, // Green for active label
         ),
         unselectedLabelStyle: TextStyle(
-          color: AppColors.greyColor,  // Grey for inactive labels
+          color: AppColors.greyColor, // Grey for inactive labels
         ),
 
         onTap: _onItemTapped,
@@ -83,7 +91,10 @@ class _AdminNavigationBarState extends State<AdminNavigationBar> {
             : null,
         child: Icon(
           icon,
-          color: _selectedIndex == index ? AppColors.whiteColor : AppColors.greyColor,  // White when selected, grey when unselected
+          color: _selectedIndex == index
+              ? AppColors.whiteColor
+              : AppColors
+                  .greyColor, // White when selected, grey when unselected
           size: 30,
         ));
   }

@@ -34,20 +34,21 @@ class _AllItemsPageState extends State<AllItemsPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: AppColors.themeColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 20),
+          icon: const Icon(Icons.arrow_back, size: 20, color: AppColors.whiteColor,),
           onPressed: () {},
         ),
         title: const Text(
           "All Items",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.whiteColor),
         ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search, color: AppColors.whiteColor,))],
         centerTitle: true,
       ),
       body: GridView.builder(
+        padding:const  EdgeInsets.symmetric(vertical: 16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 20,
