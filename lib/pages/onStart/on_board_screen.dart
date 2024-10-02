@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/admin_home_page.dart';
 import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/Resources/auth/sign_in.dart';
 import 'package:myshop/pages/user_navigation_bar.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Admin/Pages/User_Order/all_user_order_page.dart';
-import 'package:myshop/Admin/Pages/admin_home_page.dart';
-import 'package:myshop/Admin/Pages/see_all_items_page.dart';
+import 'package:myshop/Admin/Pages/Admin_Home_page/admin_home_page.dart';
+import 'package:myshop/Admin/Pages/display_item_page/see_all_items_page.dart';
 import 'package:myshop/utils/colors.dart';
 
 class AdminNavigationBar extends StatefulWidget {

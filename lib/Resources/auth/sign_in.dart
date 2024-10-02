@@ -2,7 +2,6 @@
 
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/admin_home_page.dart';
 import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/Resources/auth/sign_up.dart';

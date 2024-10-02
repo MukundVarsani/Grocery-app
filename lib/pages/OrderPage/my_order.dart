@@ -5,7 +5,7 @@ import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/pages/OrderPage/order_item_card.dart';
 import 'package:myshop/services/OrderServices/order_services.dart';
 import 'package:myshop/utils/colors.dart';
-import 'package:velocity_x/velocity_x.dart';
+
 
 class MyOrder extends StatefulWidget {
   @override
@@ -39,9 +39,6 @@ class _MyOrderState extends State<MyOrder> {
 
   void setActiveStep(String status) {
     switch (status) {
-      case "0":
-        activeStep = 0;
-        break;
       case "1":
         activeStep = 1;
         break;

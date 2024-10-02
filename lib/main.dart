@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/admin_home_page.dart';
+import 'package:myshop/Admin/Pages/Admin_Home_page/admin_home_page.dart';
 import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/pages/onStart/splash_screen.dart';
 

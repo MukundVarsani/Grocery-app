@@ -1,29 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/Product_detail_page/product_detail_Page.dart';
 import 'package:myshop/Model/product_model.dart';
-import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
-
 import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/utils/colors.dart';
-
 import 'package:myshop/widgets/features/best_selling.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class AllItemsPage extends StatefulWidget {
-  const AllItemsPage({super.key});
+class SeeAllItemsPage extends StatefulWidget {
+  const SeeAllItemsPage({super.key});
 
   @override
-  State<AllItemsPage> createState() => _AllItemsPageState();
+  State<SeeAllItemsPage> createState() => _SeeAllItemsPageState();
 }
 
-class _AllItemsPageState extends State<AllItemsPage> {
+class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
   List<ProductModel> allProducts = [];
-  List<ProductModel> filterdProducts = [];
-
+  List<ProductModel> filteredProduct = [];
   final ProductService _productService = ProductService();
+
+  final TextEditingController _searchController = TextEditingController();
   bool isSearching = false;
   bool isPriceUp = false;
   bool isLoading = false;
+
   @override
   void initState() {
     getAllProducts();
@@ -31,19 +30,18 @@ class _AllItemsPageState extends State<AllItemsPage> {
   }
 
   void getAllProducts() async {
-    setState(() {
+     setState(() {
       isLoading = true;
     });
     allProducts = await ProductService().getAllAvailableItems();
-    filterdProducts = allProducts;
-
+    filteredProduct = allProducts;
     setState(() {
       isLoading = false;
     });
   }
 
-  void filterByLowPrice() {
-    filterdProducts.sort(
+   void filterByLowPrice() {
+    filteredProduct.sort(
       (a, b) => int.parse(a.price!).compareTo(int.parse(b.price!)),
     );
     Navigator.pop(context);
@@ -53,7 +51,7 @@ class _AllItemsPageState extends State<AllItemsPage> {
   }
 
   void filterByHighPrice() {
-    filterdProducts.sort(
+    filteredProduct.sort(
       (a, b) => int.parse(b.price!).compareTo(int.parse(a.price!)),
     );
     Navigator.pop(context);
@@ -80,14 +78,14 @@ class _AllItemsPageState extends State<AllItemsPage> {
               isSearching = !isSearching;
             });
 
-            filterdProducts = allProducts;
+            filteredProduct = allProducts;
           },
         ),
         title: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           child: isSearching
               ? Container(
-                  margin: const EdgeInsets.only(bottom: 10),
+                  margin:const EdgeInsets.only(bottom: 10),
                   child: VxTextField(
                     clear: false,
                     enableSuggestions: true,
@@ -99,25 +97,25 @@ class _AllItemsPageState extends State<AllItemsPage> {
                       Icons.search,
                       color: AppColors.themeColor,
                     ),
-                    onChanged: (query) {
+                    onChanged: (email) {
                       List<ProductModel> filtered =
                           allProducts.where((product) {
-                        final productName = product.name?.toLowerCase() ?? "";
-                        final input = query.toLowerCase();
-
+                        final productName = product.name?.toLowerCase() ?? '';
+                        final input = email.toLowerCase();
                         return productName.contains(input);
                       }).toList();
 
                       setState(() {
-                        filterdProducts = filtered;
+                        filteredProduct = filtered;
                       });
                     },
                     cursorColor: AppColors.themeColor,
                     style: const TextStyle(color: AppColors.themeColor),
+
                   ),
                 )
               : const Text(
-                  "All Items",
+                  "All Products",
                   key: ValueKey('titleText'),
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -125,7 +123,7 @@ class _AllItemsPageState extends State<AllItemsPage> {
                       color: AppColors.whiteColor),
                 ),
         ),
-        actions: [
+       actions: [
           IconButton(
               onPressed: () {
                 showDialog(
@@ -207,50 +205,33 @@ class _AllItemsPageState extends State<AllItemsPage> {
         ],
         centerTitle: true,
       ),
-      body: isLoading ? 
-     const  Center(child: CircularProgressIndicator(),)
-      : filterdProducts.isEmpty
-          ?  Container(
-                color: AppColors.lightModeCardColor,
-                height: double.maxFinite,
-                width: double.maxFinite,
-
-                child:const Center(
-                  child:   Text(
-                    "No Item Found",
-                    style: TextStyle(
-                        color: AppColors.themeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500),
-                  ),
+      body: GridView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 20,
+          childAspectRatio: 163 / 180,
+        ),
+        itemCount: filteredProduct.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (c) =>
+                      ProductDetailPage(product: filteredProduct[index]),
                 ),
               )
-            
-          : GridView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 163 / 180),
-              itemCount: filterdProducts.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () => {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (c) => ItemDetailPage(
-                            product: filterdProducts[index],
-                          ),
-                        ))
-                  },
-                  child: ItemCard(
-                      image: filterdProducts[index].imageUrl ?? "",
-                      name: filterdProducts[index].name ?? "NA",
-                      price: filterdProducts[index].price ?? "Na"),
-                );
-              },
+            },
+            child: ItemCard(
+              image: filteredProduct[index].imageUrl ?? "",
+              name: filteredProduct[index].name ?? "NA",
+              price: filteredProduct[index].price ?? "NA",
             ),
+          );
+        },
+      ),
     );
   }
 }

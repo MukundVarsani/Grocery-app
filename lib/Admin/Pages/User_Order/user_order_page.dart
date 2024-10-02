@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:myshop/Admin/Services/admin_order_service.dart';
-import 'package:myshop/Admin/Services/admin_services.dart';
 import 'package:myshop/Model/order_model.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/pages/OrderPage/order_item_card.dart';
 
 import 'package:myshop/utils/colors.dart';
-import 'package:velocity_x/velocity_x.dart';
-
 class UserOrderPage extends StatefulWidget {
   final String userId;
 
@@ -47,14 +44,14 @@ class _UserOrderPageState extends State<UserOrderPage> {
 
   void setActiveStep(String status) {
     switch (status) {
-      case "0":
-        activeStep = 0;
-        break;
       case "1":
         activeStep = 1;
         break;
       case "2":
         activeStep = 2;
+        break;
+      case "3":
+        activeStep = 3;
         break;
 
       default:
@@ -74,7 +71,7 @@ class _UserOrderPageState extends State<UserOrderPage> {
         ),
         backgroundColor: AppColors.themeColor,
         title: const Text(
-          'My Order',
+          'User Order',
           style: TextStyle(
               color: AppColors.whiteColor, fontWeight: FontWeight.w600),
         ),

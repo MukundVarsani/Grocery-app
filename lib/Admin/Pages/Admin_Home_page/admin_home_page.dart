@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/add_Item_to_cat_page.dart';
-import 'package:myshop/Admin/Pages/display_avail_Item.dart';
-import 'package:myshop/Admin/Pages/product_detail_Page.dart';
-import 'package:myshop/Admin/Pages/see_all_items_page.dart';
+import 'package:myshop/Admin/Pages/Add_to_storage/add_Item_to_cat_page.dart';
+import 'package:myshop/Admin/Pages/display_item_page/display_avail_Item.dart';
+import 'package:myshop/Admin/Pages/Product_detail_page/product_detail_Page.dart';
 import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
@@ -15,7 +14,6 @@ import 'package:myshop/utils/images.dart';
 import 'package:myshop/utils/utils.dart';
 import 'package:myshop/widgets/features/best_selling.dart';
 import 'package:myshop/widgets/global/button.dart';
-
 import 'package:myshop/widgets/global/category_avatar.dart';
 import 'package:provider/provider.dart';
 
