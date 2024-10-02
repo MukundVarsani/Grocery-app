@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Pages/User_Order/all_user_order_page.dart';
 import 'package:myshop/Admin/Pages/admin_home_page.dart';
 import 'package:myshop/utils/colors.dart';
 
@@ -14,7 +15,7 @@ class _AdminNavigationBarState extends State<AdminNavigationBar> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     AdminHomePage(),
-    Text("Home 2"),
+    AllUserOrderPage(),
     Text("Home 3"),
     Text("Home 4"),
   ];

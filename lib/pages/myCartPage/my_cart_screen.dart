@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/display_avail_Item.dart';
 import 'package:myshop/Model/product_model.dart';
-import 'package:myshop/pages/allItemPage/all_items.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
 import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/CartServices/cart_services.dart';
@@ -9,6 +7,7 @@ import 'package:myshop/services/OrderServices/order_services.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/widgets/global/button.dart';
 import 'package:myshop/widgets/global/cart_item_card.dart';
+
 
 class MyCartScreen extends StatefulWidget {
   const MyCartScreen({super.key});
@@ -20,6 +19,7 @@ class MyCartScreen extends StatefulWidget {
 class _MyCartScreenState extends State<MyCartScreen> {
   List<ProductModel> cartProducts = [];
   bool isOrdering = false;
+  int total = 0;
   final CartServices _cartServices = CartServices();
   final OrderServices _orderServices = OrderServices();
 
@@ -31,11 +31,18 @@ class _MyCartScreenState extends State<MyCartScreen> {
 
   void getAllCartProducts() async {
     cartProducts = await _cartServices.getCartProduct();
+
+    if (cartProducts.isNotEmpty) {
+      for (var product in cartProducts) {
+        total = total + (int.parse(product.price!) * int.parse(product.stock!));
+      }
+    }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -53,28 +60,40 @@ class _MyCartScreenState extends State<MyCartScreen> {
       ),
       body: cartProducts.isEmpty
           ? SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-                  
+              width: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text("Is cart Empty? ", style: TextStyle(color: AppColors.themeColor, fontSize: 24, fontWeight: FontWeight.w500,)),
+                  const Text("Is cart Empty? ",
+                      style: TextStyle(
+                        color: AppColors.themeColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      )),
                   Container(
-                    margin: const EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 20),
                       width: 40,
                       height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.themeColor,
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: IconButton(onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=>const UserNavigationBar(index:1 ,)));
-                    }, icon: const  Icon(Icons.add,color: AppColors.whiteColor,)))
+                      decoration: BoxDecoration(
+                          color: AppColors.themeColor,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const UserNavigationBar(
+                                          index: 1,
+                                        )));
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: AppColors.whiteColor,
+                          ))),
                 ],
               ),
-          )
+            )
           : Column(
               children: [
                 ListView.builder(
@@ -146,6 +165,34 @@ class _MyCartScreenState extends State<MyCartScreen> {
                       );
                     }),
                 const Spacer(),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Text(
+                      "Total Rs: ",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                    ),
+                    Text("₹ $total/-",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600)),
+                    const Spacer(),
+                    const Text("Total item: ",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w400)),
+                    Text(cartProducts.length.toString(),
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600)),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: PrimaryButton(

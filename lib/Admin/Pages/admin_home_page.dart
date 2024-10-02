@@ -17,7 +17,6 @@ import 'package:myshop/widgets/global/button.dart';
 
 import 'package:myshop/widgets/global/category_avatar.dart';
 import 'package:provider/provider.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});

@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:easy_stepper/easy_stepper.dart';
+import 'package:myshop/Admin/Services/admin_order_service.dart';
+import 'package:myshop/Admin/Services/admin_services.dart';
 import 'package:myshop/Model/order_model.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/pages/OrderPage/order_item_card.dart';
-import 'package:myshop/services/OrderServices/order_services.dart';
+
 import 'package:myshop/utils/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class MyOrder extends StatefulWidget {
+class UserOrderPage extends StatefulWidget {
+  final String userId;
+
+  const UserOrderPage({super.key, required this.userId});
+
   @override
-  _MyOrderState createState() => _MyOrderState();
+  _UserOrderPageState createState() => _UserOrderPageState();
 }
 
-class _MyOrderState extends State<MyOrder> {
+class _UserOrderPageState extends State<UserOrderPage> {
   int activeStep = 0; // Current active step index
   List<ProductModel> myProducts = [];
   OrderModel? myOrder;
   bool isLoading = true;
 
+  final AdminOrderService _adminOrderService = AdminOrderService();
+
   @override
   void initState() {
     super.initState();
-    getMyOrder();
+    getMyOrder(widget.userId);
   }
 
-  Future<void> getMyOrder() async {
+  Future<void> getMyOrder(String userId) async {
     // Fetch the order and update the state
-    myOrder = await OrderServices().getOrder();
+    myOrder = await _adminOrderService.getUserOrders(userId: userId);
     if (myOrder != null && myOrder?.products != null) {
       myProducts = myOrder!.products!;
       setActiveStep(myOrder!.orderStatus ?? '4');
@@ -48,9 +56,6 @@ class _MyOrderState extends State<MyOrder> {
       case "2":
         activeStep = 2;
         break;
-      case "3":
-        activeStep = 3;
-        break;
 
       default:
         activeStep = 4;
@@ -63,6 +68,10 @@ class _MyOrderState extends State<MyOrder> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          color: AppColors.whiteColor,
+          onPressed: () => Navigator.pop(context),
+        ),
         backgroundColor: AppColors.themeColor,
         title: const Text(
           'My Order',
@@ -163,12 +172,12 @@ class _MyOrderState extends State<MyOrder> {
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            "Order \nReceived",
+                            "Order \nDelivered",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            "Order \nDelivered",
+                            "Order \nCancelled",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 12),
                           ),
@@ -202,7 +211,7 @@ class _MyOrderState extends State<MyOrder> {
                           unreachedLineColor: AppColors.greyColor,
                           activeLineColor: AppColors.themeColor,
                         ),
-                        enableStepTapping: false,
+                        enableStepTapping: true,
                         steps: const [
                           EasyStep(
                             icon: Icon(
@@ -230,9 +239,13 @@ class _MyOrderState extends State<MyOrder> {
                           ),
                         ],
                         onStepReached: (index) {
-                          setState(() {
-                            activeStep = index;
-                          });
+                          _adminOrderService.updateOrderStatus(
+                              statusCode: (index + 1).toString(),
+                              userId: myOrder!.userId.toString()
+                              );
+                          activeStep = index+1;
+
+                          setState(() {});
                         },
                       ),
                     ],

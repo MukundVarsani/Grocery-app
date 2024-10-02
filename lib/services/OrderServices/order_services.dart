@@ -14,12 +14,7 @@ import 'package:velocity_x/velocity_x.dart';
 class OrderServices {
   final CollectionReference _orderStorage;
   final String? userid;
-  final Address shippingAddress = Address(
-    city: "Bhuj",
-    country: "India",
-    postalCode: "789078",
-    street: "Naranpura",
-  );
+
   late final UserProvider _userServices;
 
   OrderServices()
@@ -142,4 +137,6 @@ class OrderServices {
       return OrderModel();
     }
   }
+
+
 }
