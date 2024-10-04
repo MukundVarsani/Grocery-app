@@ -182,7 +182,7 @@ class _AllItemsPageState extends State<AllItemsPage> {
                                                   top: 10, bottom: 2),
                                               width: double.infinity,
                                               child: Text(
-                                                "Price ${isPriceUp ? "↑" : "↓"} ",
+                                                "Price ${!isPriceUp ? "↑" : "↓"} ",
                                                 style: const TextStyle(
                                                     color: AppColors.themeColor,
                                                     fontSize: 18,

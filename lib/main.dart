@@ -1,16 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/Admin_Home_page/admin_home_page.dart';
-import 'package:myshop/Admin/admin_navigation_bar.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:myshop/pages/onStart/splash_screen.dart';
 
 
 
 import 'package:myshop/services/Provider/user_provider.dart';
+import 'package:myshop/utils/constants.dart';
 import 'package:provider/provider.dart';
-
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey = stripePublishingKey;
+
   await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: "AIzaSyBOfe_iSxGMg4XHKWUgvt-7grks5UyC4kc",
@@ -19,11 +22,12 @@ void main() async {
           projectId: "grocerry-app-2fb25",
           storageBucket: "grocerry-app-2fb25.appspot.com"));
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
+  
 
   // This widget is the root of your application.
   @override
@@ -31,6 +35,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
       child: MaterialApp(
+        navigatorObservers: [routeObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

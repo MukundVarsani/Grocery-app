@@ -42,6 +42,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // foregroundColor: AppColors.themeColor,
         leading: BackButton(
           color: AppColors.whiteColor,
           onPressed: () => Navigator.pop(context),
@@ -104,6 +105,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   width: 200,
                   child: TextField(
                     readOnly: isEditing,
+                    
                     keyboardType: TextInputType.name,
                     controller: _nameController,
                     decoration: InputDecoration(
@@ -111,7 +113,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           color: AppColors.themeColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16),
-                      alignLabelWithHint: true,
+                     
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintStyle: TextStyle(color: AppColors.themeColor),
                       enabledBorder: UnderlineInputBorder(

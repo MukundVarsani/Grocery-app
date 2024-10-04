@@ -30,7 +30,7 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
   }
 
   void getAllProducts() async {
-     setState(() {
+    setState(() {
       isLoading = true;
     });
     allProducts = await ProductService().getAllAvailableItems();
@@ -40,7 +40,7 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
     });
   }
 
-   void filterByLowPrice() {
+  void filterByLowPrice() {
     filteredProduct.sort(
       (a, b) => int.parse(a.price!).compareTo(int.parse(b.price!)),
     );
@@ -66,7 +66,6 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         backgroundColor: AppColors.themeColor,
-        elevation: 0,
         leading: IconButton(
           iconSize: 24,
           icon: Icon(
@@ -85,9 +84,10 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
           duration: const Duration(milliseconds: 200),
           child: isSearching
               ? Container(
-                  margin:const EdgeInsets.only(bottom: 10),
+                  margin: const EdgeInsets.only(bottom: 10),
                   child: VxTextField(
                     clear: false,
+                    autofocus: true,
                     enableSuggestions: true,
                     fillColor: Colors.white,
                     borderColor: AppColors.whiteColor,
@@ -111,7 +111,6 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
                     },
                     cursorColor: AppColors.themeColor,
                     style: const TextStyle(color: AppColors.themeColor),
-
                   ),
                 )
               : const Text(
@@ -123,7 +122,7 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
                       color: AppColors.whiteColor),
                 ),
         ),
-       actions: [
+        actions: [
           IconButton(
               onPressed: () {
                 showDialog(
@@ -180,7 +179,7 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
                                                   top: 10, bottom: 2),
                                               width: double.infinity,
                                               child: Text(
-                                                "Price ${isPriceUp ? "↑" : "↓"} ",
+                                                "Price ${!isPriceUp ? "↑" : "↓"} ",
                                                 style: const TextStyle(
                                                     color: AppColors.themeColor,
                                                     fontSize: 18,
@@ -205,33 +204,50 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
         ],
         centerTitle: true,
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 20,
-          childAspectRatio: 163 / 180,
-        ),
-        itemCount: filteredProduct.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (c) =>
-                      ProductDetailPage(product: filteredProduct[index]),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator.adaptive())
+          : filteredProduct.isEmpty
+              ? Container(
+                  color: AppColors.lightModeCardColor,
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  child: const Center(
+                    child: Text(
+                      "No Item Found",
+                      style: TextStyle(
+                          color: AppColors.themeColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: 163 / 180,
+                  ),
+                  itemCount: filteredProduct.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (c) => ProductDetailPage(
+                                product: filteredProduct[index]),
+                          ),
+                        )
+                      },
+                      child: ItemCard(
+                        image: filteredProduct[index].imageUrl ?? "",
+                        name: filteredProduct[index].name ?? "NA",
+                        price: filteredProduct[index].price ?? "NA",
+                      ),
+                    );
+                  },
                 ),
-              )
-            },
-            child: ItemCard(
-              image: filteredProduct[index].imageUrl ?? "",
-              name: filteredProduct[index].name ?? "NA",
-              price: filteredProduct[index].price ?? "NA",
-            ),
-          );
-        },
-      ),
     );
   }
 }

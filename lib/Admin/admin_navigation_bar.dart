@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myshop/Admin/Pages/User_Order/all_user_order_page.dart';
 import 'package:myshop/Admin/Pages/Admin_Home_page/admin_home_page.dart';
 import 'package:myshop/Admin/Pages/display_item_page/see_all_items_page.dart';
+import 'package:myshop/pages/Payment/payment_screen.dart';
 import 'package:myshop/utils/colors.dart';
 
 class AdminNavigationBar extends StatefulWidget {
@@ -15,11 +16,12 @@ class AdminNavigationBar extends StatefulWidget {
 class _AdminNavigationBarState extends State<AdminNavigationBar> {
   late int _selectedIndex;
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     AdminHomePage(),
     SeeAllItemsPage(),
     AllUserOrderPage(),
-    Text("Home 4"),
+    // PaymentScreen()
+    Text("Admin"),
   ];
 
   void _onItemTapped(int index) {
