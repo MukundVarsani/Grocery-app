@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myshop/Model/category_model.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/single_category_model.dart';
 import 'package:myshop/utils/colors.dart';
@@ -11,8 +12,6 @@ class AdminService {
   AdminService()
       : _productStorage =
             FirebaseFirestore.instance.collection('Products-Storage');
-
-
 
   Future<void> addItemToStorage(String category, String name, String id,
       ProductModel product, BuildContext context) async {
@@ -86,5 +85,65 @@ class AdminService {
     return catSortProduct;
   }
 
+  Future<void> updateStorageItem(
+      {required Map<String, dynamic> updateField,
+      required String id,
+      required String categoryName,
+      required BuildContext context
+      }) async {
+    try {
+      DocumentReference categoryDoc = _productStorage.doc(categoryName);
 
+      DocumentSnapshot ds = await categoryDoc.get();
+
+      if (ds.exists) {
+        SingleCategoryModel categoryModel =
+            SingleCategoryModel.fromJson(ds.data()! as Map<String, dynamic>);
+
+        if (categoryModel.products != null) {
+          int updateIndex =
+              categoryModel.products!.indexWhere((product) => product.id == id);
+
+          if (updateIndex != -1) {
+            ProductModel product = categoryModel.products![updateIndex];
+
+            categoryModel.products![updateIndex] = ProductModel(
+              imageUrl: product.imageUrl,
+              id: product.id,
+              category: product.category,
+              description: updateField['description'],
+              name: updateField['name'],
+              price: updateField['price'],
+              stock: updateField['stock'],
+              isAvailable: product.isAvailable,
+              updatedAt: DateTime.now().toString(),
+              createdAt: product.createdAt,
+            );
+
+            await categoryDoc
+                .withConverter<SingleCategoryModel>(
+                  fromFirestore: (snapshot, _) =>
+                      SingleCategoryModel.fromJson(snapshot.data()!),
+                  toFirestore: (SingleCategoryModel model, _) => model.toJson(),
+                )
+                .set(categoryModel);
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              duration: Duration(seconds: 2),
+              backgroundColor: AppColors.themeColor,
+              content: Text(
+                "Product updated successfully!",
+                style: TextStyle(
+                  color: AppColors.whiteColor,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                ),
+              )));
+        }
+      }
+    } catch (e) {
+      Vx.log("Error while updating storage item ${e.toString()}");
+    }
+  }
 }

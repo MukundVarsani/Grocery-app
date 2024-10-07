@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_const, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:myshop/Admin/Services/admin_services.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/utils/colors.dart';
 
@@ -25,24 +26,46 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final TextEditingController _descriptionController = TextEditingController();
 
   bool isEditing = true;
+  bool isUpdating = false;
+  late ProductModel product;
+
+  final AdminService _adminService = AdminService();
 
   @override
   void initState() {
-    _nameController.text = widget.product.name ?? "Null";
-    _priceController.text = widget.product.price ?? "Null";
-    _quantityController.text = widget.product.stock ?? "Null";
-    _descriptionController.text = widget.product.description ?? "Null";
-    imageUrl = widget.product.imageUrl ?? "Null";
-    category = widget.product.category ?? 'Null';
-    productId = widget.product.id ?? "Null";
+    product = widget.product;
+    _nameController.text = product.name ?? "Null";
+    _priceController.text = product.price ?? "Null";
+    _quantityController.text = product.stock ?? "Null";
+    _descriptionController.text = product.description ?? "Null";
+    imageUrl = product.imageUrl ?? "Null";
+    category = product.category ?? 'Null';
+    productId = product.id ?? "Null";
     super.initState();
+  }
+
+  Future<void> updateField() async {
+    await _adminService.updateStorageItem(
+        updateField: {
+          "price": _priceController.text.trim(),
+          "stock": _quantityController.text.trim(),
+          "name": _nameController.text.trim(),
+          "description": _descriptionController.text.trim()
+        },
+        id: product.id ?? "",
+        categoryName: product.category ?? "",
+        context: context);
+
+    product.name = _nameController.text.trim();
+    product.price = _priceController.text.trim();
+    product.stock = _quantityController.text.trim();
+    product.description = _descriptionController.text.trim();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // foregroundColor: AppColors.themeColor,
         leading: BackButton(
           color: AppColors.whiteColor,
           onPressed: () => Navigator.pop(context),
@@ -72,7 +95,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
 
             const SizedBox(height: 8),
-             Row(children: [
+            Row(children: [
               Text(
                 "Product Id:",
                 style: TextStyle(
@@ -80,7 +103,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     fontWeight: FontWeight.w600,
                     color: AppColors.themeColor),
               ),
-            const SizedBox(width: 5),
+              const SizedBox(width: 5),
               Text(
                 productId,
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
@@ -105,7 +128,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   width: 200,
                   child: TextField(
                     readOnly: isEditing,
-                    
                     keyboardType: TextInputType.name,
                     controller: _nameController,
                     decoration: InputDecoration(
@@ -113,7 +135,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           color: AppColors.themeColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16),
-                     
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintStyle: TextStyle(color: AppColors.themeColor),
                       enabledBorder: UnderlineInputBorder(
@@ -301,9 +322,31 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (!isEditing) isEditing = true;
-                  setState(() {});
+
+                  showDialog<void>(
+                      context: context,
+                      barrierDismissible: true, // user must tap button!
+                      builder: (BuildContext context) {
+                        return Center(
+                          child: SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator.adaptive(
+                                backgroundColor: AppColors.whiteColor,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.themeColor)),
+                          ),
+                        );
+                      }
+                    );
+
+                  await updateField();
+                  Navigator.pop(context);
+                  setState(() {
+                    isUpdating = false;
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.themeColor,

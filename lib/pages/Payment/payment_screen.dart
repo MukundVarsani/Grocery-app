@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:myshop/Admin/Pages/Add_to_storage/add_Item_to_cat_page.dart';
 import 'package:myshop/Model/product_model.dart';
-import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
-import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/CartServices/cart_services.dart';
 import 'package:myshop/services/OrderServices/order_services.dart';
 import 'package:myshop/services/PaymentServices/payement_services.dart';
 import 'package:myshop/utils/colors.dart';
-import 'package:myshop/widgets/global/button.dart';
-import 'package:myshop/widgets/global/cart_item_card.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+
 class PaymentScreen extends StatefulWidget {
+  
   final List<ProductModel> orderProducts;
   final String total;
   final VoidCallback onOrderComplete;

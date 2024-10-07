@@ -9,6 +9,7 @@ class ProductService {
       : _productStorage =
             FirebaseFirestore.instance.collection('Products-Storage');
 
+
   Future<List<ProductModel>> getSingleCategoryProducts(
       {required String category}) async {
     _productStorage = FirebaseFirestore.instance.collection('Products-Storage');
@@ -31,29 +32,7 @@ class ProductService {
     return catSortProduct;
   }
 
-  // Future<List<ProductModel>> getAllAvailItem() async {
-  //   List<ProductModel> allProducts = [];
-
-  //   try {
-  //     QuerySnapshot qs = await _productStorage.get();
-
-  //     for (QueryDocumentSnapshot doc in qs.docs) {
-  //       Map<String, dynamic> ob = doc.data() as Map<String, dynamic>;
-
-  //       List<dynamic> productsList = ob['products'];
-
-  //       for (int i = 0; i < productsList.length; i++) {
-  //         ProductModel pm = ProductModel.fromJson(ob['products'][i]);
-  //         allProducts.add(pm);
-  //       }
-  //     }
-
-  //   } catch (e) {
-  //     Vx.log("Error while fetching all item for User: $e");
-  //   }
-
-  //   return allProducts;
-  // }
+ 
 
   Future<List<ProductModel>> getAllAvailableItems() async {
     List<ProductModel> allProducts = [];
