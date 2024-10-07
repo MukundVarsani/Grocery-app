@@ -54,6 +54,8 @@ dependencies:
   http: ^1.2.2
   dio: ^5.7.0
   slider_button: ^2.1.0
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
 
 
 dev_dependencies:

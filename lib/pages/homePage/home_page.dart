@@ -495,6 +495,7 @@ class _HomepageState extends State<Homepage> {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: catItemsList.length,
+                    
                     itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
                           Navigator.push(

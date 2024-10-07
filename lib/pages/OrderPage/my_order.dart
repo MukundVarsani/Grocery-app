@@ -160,12 +160,12 @@ class _MyOrderState extends State<MyOrder> {
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            "Order \nReceived",
+                            "Order \nDelivered",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            "Order \nDelivered",
+                            "Order \nCancelled",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 12),
                           ),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/services/CartServices/cart_services.dart';
 import 'package:myshop/services/OrderServices/order_services.dart';
-import 'package:myshop/services/PaymentServices/payement_services.dart';
+import 'package:myshop/services/PaymentServices/payment_services.dart';
+import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/utils/colors.dart';
+import 'package:provider/provider.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-
 class PaymentScreen extends StatefulWidget {
-  
   final List<ProductModel> orderProducts;
   final String total;
   final VoidCallback onOrderComplete;
@@ -27,12 +28,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
   List<ProductModel> cartProducts = [];
   bool isOrdering = false;
   int total = 0;
+  UserModel? user;
   final CartServices _cartServices = CartServices();
   final OrderServices _orderServices = OrderServices();
 
   @override
   void initState() {
     cartProducts = widget.orderProducts;
+
+    UserProvider provider = Provider.of<UserProvider>(context, listen: false);
+    user = provider.getCurrentUser;
     super.initState();
     total = int.parse(widget.total);
   }
@@ -160,12 +165,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: SliderButton(
                     action: () async {
+                      if (user == null) {
+                        return null;
+                      }
+                      if (user?.address?.country == null &&
+                          user?.address?.city == null &&
+                          user?.address?.postalCode == null &&
+                          user?.address?.street == null) {
+                        VxToast.show(context,
+                            msg: "Please provide full address detail");
+                        return null;
+                      }
+
                       bool isSuccessfull =
-                          await PayementServices.instance.makePayment(total);
+                          await PaymentServices.instance.makePayment(total);
 
                       Vx.log(isSuccessfull);
                       if (!isSuccessfull) {
                         VxToast.show(context, msg: "Payment Failed");
+                        Navigator.pop(context);
                         return false;
                       } else {
                         await _orderServices.makeOrder(cartProducts, context);

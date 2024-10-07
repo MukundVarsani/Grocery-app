@@ -2,18 +2,20 @@
 
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Admin/admin_navigation_bar.dart';
-import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/Resources/auth/sign_up.dart';
 import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/AuthServices/auth_method.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
+import 'package:myshop/services/bloc/AuthBloc/LoginCubit/login_cubit.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
-import 'package:myshop/utils/utils.dart';
 import 'package:myshop/widgets/global/button.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../../services/bloc/AuthBloc/LoginCubit/login_state.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -35,50 +37,13 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
-  bool isCheck = false;
-  bool isLoading = false;
   bool isAdmin = false;
 
   void userSign() async {
     if (_formKey.currentState!.validate()) {
-      String res = "false";
-
-      setState(() {
-        isLoading = true;
-      });
-
-      res = await _auth.signIn(
+      BlocProvider.of<LoginCubit>(context).loginStatus(context,
           email: emailController.text.trim(),
           password: passwordController.text.trim());
-
-      UserProvider userProvider =
-          Provider.of<UserProvider>(context, listen: false);
-
-      await userProvider.setUser();
-       isAdmin = userProvider.getCurrentUser?.role == 'Admin' ? true : false;
-
-      setState(() {
-        isLoading = false;
-      });
-
-      if (res.validateEmail()) {
-        UserModel? currentUser = userProvider.getCurrentUser;
-
-        if (currentUser != null) {
-          Utils.saveToken(currentUser.id!);
-          VxToast.show(context, msg: "Welcome ${currentUser.name}");
-        }
-
-        
-
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) =>  isAdmin ? const AdminNavigationBar() : const UserNavigationBar()));
-
-        emailController.clear();
-        passwordController.clear();
-      } else {
-        VxToast.show(context, msg: res.toString());
-      }
     }
   }
 
@@ -182,9 +147,6 @@ class _SignInPageState extends State<SignInPage> {
                               Icons.lock,
                               color: AppColors.themeColor,
                             ),
-                            onChanged: (value) {
-                              // _formKey.currentState!.validate();
-                            },
                             suffixColor: AppColors.themeColor,
                             validator: (password) {
                               if (password!.isEmpty) {
@@ -216,7 +178,8 @@ class _SignInPageState extends State<SignInPage> {
                                   )),
                               InkWell(
                                 onTap: () {
-                                  _auth.forgetPassword("yarobop401@jofuso.com");
+                                  _auth.forgetPassword(
+                                      "varsanimukund56@gmail.com");
                                 },
                                 child: const Text(
                                   'Forget Password',
@@ -229,10 +192,41 @@ class _SignInPageState extends State<SignInPage> {
                               const HeightBox(60),
                             ],
                           ),
-                          PrimaryButton(
-                              title: "Submit",
-                              isLoading: isLoading,
-                              onPressed: userSign)
+                          BlocConsumer<LoginCubit, LoginState>(
+                            listener: (context, state) async {
+                              if (state is LoginLoadedState) {
+                                UserProvider userProvider =
+                                    Provider.of<UserProvider>(context,
+                                        listen: false);
+
+                                isAdmin =
+                                    userProvider.getCurrentUser?.role == 'Admin'
+                                        ? true
+                                        : false;
+
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (_) => isAdmin
+                                            ? const AdminNavigationBar()
+                                            : const UserNavigationBar()));
+
+                                emailController.clear();
+                                passwordController.clear();
+                                VxToast.show(context, msg:"Welcome ${state.name}");
+                              } else if (state is LoginErrorState) {
+                                VxToast.show(context, msg: state.error);
+                              }
+                            },
+                            builder: (context, state) {
+                              bool isLoading = state is LoginLoadingState;
+                              return PrimaryButton(
+                                  title: "Submit",
+                                  isLoading: isLoading,
+                                  onPressed: () {
+                                    userSign();
+                                  });
+                            },
+                          )
                         ])),
               ),
             )
