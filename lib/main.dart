@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:myshop/bloc/CartBloc/cart_cubit.dart';
 import 'package:myshop/bloc/ProductBloc/GetAllProducts_Cubit/get_all_products_cubit.dart';
 import 'package:myshop/bloc/ProductBloc/GetBestSelling_Cubit/best_selling_product_cubit.dart';
+import 'package:myshop/bloc/ProductBloc/GetCatProduct_Cubit/get_cat_product_cubit.dart';
 import 'package:myshop/pages/onStart/splash_screen.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/bloc/AuthBloc/LoginCubit/login_cubit.dart';
@@ -45,6 +47,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => GetAllProductsCubit(),
+        ),
+        BlocProvider(
+          create: (_) => GetCatProductCubit(),
+        ),
+        BlocProvider(
+          create: (_) => CartCubit(),
         ),
       ],
       child: MaterialApp(

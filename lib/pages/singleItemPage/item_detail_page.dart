@@ -8,7 +8,7 @@ import 'package:myshop/widgets/global/button.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final ProductModel product;
-  
+
   const ItemDetailPage({super.key, required this.product});
 
   static const List<List<String>> itemInfo = [
@@ -47,21 +47,25 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         leadingWidth: 70,
         backgroundColor: AppColors.themeColor,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color:AppColors.whiteColor ,),
-            onPressed: () => {Navigator.pop(context)},
+          icon: const Icon(
+            Icons.arrow_back,
+            color: AppColors.whiteColor,
           ),
+          onPressed: () => {Navigator.pop(context)},
+        ),
         actions: [
           IconButton(
-              icon: const Icon(Icons.search, color: AppColors.whiteColor,),
-              onPressed: () {},
+            icon: const Icon(
+              Icons.search,
+              color: AppColors.whiteColor,
             ),
-          
+            onPressed: () {},
+          ),
         ],
       ),
       body: ListView(
         shrinkWrap: true,
         children: [
-    
           SizedBox(
             width: 400,
             height: 300,
@@ -73,8 +77,26 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   child: SizedBox(
                       height: 224,
                       width: 249,
-                      child: Image.network(widget.product.imageUrl ?? '',
-                          fit: BoxFit.contain)),
+                      child: Image.network(
+                        widget.product.imageUrl ?? '',
+                        fit: BoxFit.contain,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator.adaptive(
+                              backgroundColor: AppColors.whiteColor,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.themeColor,
+                              ),
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                      )),
                 ),
               ),
             ),
@@ -127,7 +149,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   borderRadius: BorderRadius.circular(50)),
                               child: IconButton(
                                 onPressed: () {
-                                   if (quantity == 10) return;
+                                  if (quantity == 10) return;
                                   quantity += 1;
                                   setState(() {});
                                 },

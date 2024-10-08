@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Model/cart_model.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/bloc/CartBloc/cart_cubit.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:uuid/uuid.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -75,6 +77,7 @@ class CartServices {
             userId: userId,
           ));
 
+      BlocProvider.of<CartCubit>(context).getCartProducts();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           duration: Duration(seconds: 2),

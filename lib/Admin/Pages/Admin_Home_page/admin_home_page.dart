@@ -15,6 +15,7 @@ import 'package:myshop/utils/utils.dart';
 import 'package:myshop/widgets/features/best_selling.dart';
 import 'package:myshop/widgets/global/button.dart';
 import 'package:myshop/widgets/global/category_avatar.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -62,8 +63,16 @@ class _AdminHomePageState extends State<AdminHomePage> {
     if (isLoggedOut) {
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const SignInPage()),
+          PageTransition(
+              type: PageTransitionType.scale, child: const SignInPage()),
           (route) => false);
+
+      // Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(builder: (_) => PageTransition(
+      //       type: PageTransitionType.scale,
+      //       child: const SignInPage())),
+      //     (route) => false);
     }
   }
 
@@ -76,7 +85,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         backgroundColor: AppColors.lightModeCardColor,
         toolbarHeight: 0,
       ),
@@ -148,7 +156,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => const AdminNavigationBar(index: 1,)));
+                              builder: (_) => const AdminNavigationBar(
+                                    index: 1,
+                                  )));
                     },
                     child: const Text(
                       "See all",

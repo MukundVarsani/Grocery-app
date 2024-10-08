@@ -11,20 +11,6 @@ class GetAllProductsCubit extends Cubit<GetAllProductsState> {
     getAllProducts();
   }
 
-  // void categoryWiseProduct({required String category}) async {
-  //   try {
-  //     emit(ProductLoadingState());
-
-  //     List<ProductModel> catProducts =
-  //         await _productService.getSingleCategoryProducts(category: category);
-
-  //     if (catProducts.isEmpty) emit(ProductErrorState("Products not found."));
-
-  //     emit(ProductLoadedState(catProducts));
-  //   } catch (e) {
-  //     emit(ProductErrorState(e.toString()));
-  //   }
-  // }
 
   void getAllProducts() async {
     if (state is GetAllProductsLoadingState ||

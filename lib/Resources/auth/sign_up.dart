@@ -7,6 +7,7 @@ import 'package:myshop/services/AuthServices/auth_method.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
 import 'package:myshop/widgets/global/button.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -204,15 +205,17 @@ class _SignUpPageState extends State<SignUpPage> {
                               return null;
                             },
                           ),
-                          const HeightBox(20),
+                          const HeightBox(10),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               InkWell(
                                 onTap: () {
                                   Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (_) => const SignInPage()));
+                                      PageTransition(
+                                         alignment: Alignment.topCenter,
+                                          type: PageTransitionType.scale,
+                                          child: const SignInPage()));
                                 },
                                 child: const Text(
                                   "Have an account? Sign In",

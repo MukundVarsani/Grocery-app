@@ -12,6 +12,7 @@ import 'package:myshop/bloc/AuthBloc/LoginCubit/login_cubit.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
 import 'package:myshop/widgets/global/button.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -164,9 +165,11 @@ class _SignInPageState extends State<SignInPage> {
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const SignUpPage()));
+                                          PageTransition(
+                                            alignment: Alignment.topCenter ,
+
+                                              type: PageTransitionType.rotate,
+                                              child: const SignUpPage()));
                                     },
                                     child: const Text(
                                       "Don't Have an account? Sign Up",

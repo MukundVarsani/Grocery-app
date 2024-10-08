@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Admin/Common/show_stock_card.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/bloc/ProductBloc/GetCatProduct_Cubit/get_cat_product_cubit.dart';
+import 'package:myshop/bloc/ProductBloc/GetCatProduct_Cubit/get_cat_product_state.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
-import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/utils/colors.dart';
 
 class CategoryItem extends StatefulWidget {
@@ -24,73 +26,86 @@ class CategoryItemState extends State<CategoryItem> {
   ];
 
   List<ProductModel>? categoryProduct;
-  late ProductService _productService;
 
   @override
   void initState() {
     super.initState();
-    _productService = ProductService();
-    getCatItems(widget.categoryName);
-  }
 
-  void getCatItems(String catName) async {
-    categoryProduct =
-        await _productService.getSingleCategoryProducts(category: catName);
-    setState(() {});
+    BlocProvider.of<GetCatProductCubit>(context)
+        .categoryWiseProduct(category: widget.categoryName);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const BackButtonIcon(),
-            color: AppColors.whiteColor,
-          ),
-       
-          backgroundColor: AppColors.themeColor,
-          title: const Text("Available Stock",
-              style: TextStyle(
-                  color: AppColors.whiteColor, fontWeight: FontWeight.w600)),
-          centerTitle: true,
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const BackButtonIcon(),
+          color: AppColors.whiteColor,
         ),
-        body: (categoryProduct != null)
-            ? (categoryProduct!.isNotEmpty)
-                ? GridView.builder(
-                    itemCount: categoryProduct!.length,
-                    padding: const EdgeInsets.all(10),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            crossAxisCount: 2),
-                    itemBuilder: (_, i) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) =>  ItemDetailPage(product: categoryProduct![i],)
-                                      ));
-                        },
-                        child: ShowStockCard(
-                          imgUrl: categoryProduct?[i].imageUrl ??
-                              "https://firebasestorage.googleapis.com/v0/b/grocerry-app-2fb25.appspot.com/o/ProductImage%2FFruits%2FApple?alt=media&token=e097551b-4297-4b9c-b754-8948a8258ff3",
-                          name: categoryProduct?[i].name ?? "Null",
-                          price: categoryProduct?[i].price ?? "NA",
-                          quantity: categoryProduct?[i].stock ?? "NA",
-                          cardColor: colors[i % 5],
-                        ),
-                      );
-                    })
-                : const Center(
-                    child: Text("☹\nData Not found",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400)))
-            : const Center(child: CircularProgressIndicator()));
+        backgroundColor: AppColors.themeColor,
+        title: const Text("Available Stock",
+            style: TextStyle(
+                color: AppColors.whiteColor, fontWeight: FontWeight.w600)),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<GetCatProductCubit, GetCatProductState>(
+        builder: (c, state) {
+          if (state is GetCatProductLoadingState) {
+            return const Center(
+                child: CircularProgressIndicator.adaptive(
+                  
+              backgroundColor: AppColors.whiteColor,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.themeColor),
+            ));
+          }
+
+          if (state is GetCatProductLoadedState) {
+            List<ProductModel> catProducts = state.products;
+
+            return GridView.builder(
+                itemCount: catProducts.length,
+                padding: const EdgeInsets.all(10),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2),
+                itemBuilder: (_, i) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ItemDetailPage(
+                                    product: catProducts[i],
+                                  )));
+                    },
+                    child: ShowStockCard(
+                      imgUrl: catProducts[i].imageUrl ??
+                          "https://firebasestorage.googleapis.com/v0/b/grocerry-app-2fb25.appspot.com/o/ProductImage%2FFruits%2FApple?alt=media&token=e097551b-4297-4b9c-b754-8948a8258ff3",
+                      name: catProducts[i].name ?? "Null",
+                      price: catProducts[i].price ?? "NA",
+                      quantity: catProducts[i].stock ?? "NA",
+                      cardColor: colors[i % 5],
+                    ),
+                  );
+                });
+          }
+
+          return const Center(
+            child: Text(
+              "Error while Getting Best Selling",
+              style: TextStyle(
+                  color: AppColors.themeColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

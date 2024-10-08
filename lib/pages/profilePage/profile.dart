@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Uint8List? file = await pickImage(ImageSource.gallery);
     if (file.isNotEmpty) {
       String profileURL = await StorageMethod().uploadUserProfileImageToCloud(
-          childName:'profile-pics', file: file, context: context);
+          childName: 'profile-pics', file: file, context: context);
 
       if (profileURL.isNotEmptyAndNotNull) {
         _userServices.setUserProfilePic(profileURL);
@@ -176,14 +176,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 children: [
                   Stack(children: [
-                    CircleAvatar(
-                        maxRadius: 50,
-                        foregroundImage: (currentUser != null)
+                    SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: (currentUser != null)
                             ? currentUser!.profileImage.isNotEmptyAndNotNull
-                                ? NetworkImage(
-                                    currentUser!.profileImage.toString())
-                                : const AssetImage(AppImages.userProfileImage)
-                            : const AssetImage(AppImages.userProfileImage)),
+                                ? Image.network(
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child:
+                                            CircularProgressIndicator.adaptive(
+                                          backgroundColor: AppColors.whiteColor,
+                                          valueColor:
+                                              const AlwaysStoppedAnimation<
+                                                  Color>(
+                                            AppColors.themeColor,
+                                          ),
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                    currentUser!.profileImage.toString(),
+                                  )
+                                : Image.asset(
+                                    AppImages.userProfileImage,
+                                  )
+                            : Image.asset(AppImages.userProfileImage),
+                      ),
+                    ),
                     Positioned(
                         bottom: 0,
                         right: 0,
