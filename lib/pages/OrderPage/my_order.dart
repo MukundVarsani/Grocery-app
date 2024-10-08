@@ -8,11 +8,15 @@ import 'package:myshop/utils/colors.dart';
 
 
 class MyOrder extends StatefulWidget {
+  const MyOrder({super.key});
+
+  
   @override
-  _MyOrderState createState() => _MyOrderState();
+  
+  MyOrderState createState() => MyOrderState();
 }
 
-class _MyOrderState extends State<MyOrder> {
+class MyOrderState extends State<MyOrder> {
   int activeStep = 0; // Current active step index
   List<ProductModel> myProducts = [];
   OrderModel? myOrder;

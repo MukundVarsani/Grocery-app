@@ -17,12 +17,12 @@ class UserNavigationBar extends StatefulWidget {
 class _UserNavigationBarState extends State<UserNavigationBar> {
   late int _selectedIndex;
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    const Homepage(),
-    const AllItemsPage(),
-    const MyCartScreen(),
+  static const List<Widget> _widgetOptions = <Widget>[
+    Homepage(),
+    AllItemsPage(),
+    MyCartScreen(),
     MyOrder(),
-    const ProfileScreen(),
+    ProfileScreen(),
   ];
 
   @override

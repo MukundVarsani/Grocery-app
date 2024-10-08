@@ -26,33 +26,48 @@ class ItemCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: 100,
-            child: Image.network(image, fit: BoxFit.contain,)),
+              height: 100,
+              child: Image.network(
+                image,
+                fit: BoxFit.contain,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                      child: CircularProgressIndicator.adaptive(
+                    backgroundColor: AppColors.whiteColor,
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.themeColor,
+                    ),
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ));
+                },
+              )),
           Column(
             children: [
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   name,
-                  style:
-                      const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ),
-        
-                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "1Kg, ₹ $price/-",
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red),
-                    ),
-            
-                  ],
-                
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "1Kg, ₹ $price/-",
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  ),
+                ],
               ),
             ],
           ),

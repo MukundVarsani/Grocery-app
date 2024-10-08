@@ -8,14 +8,14 @@ import 'package:myshop/Resources/auth/sign_up.dart';
 import 'package:myshop/pages/user_navigation_bar.dart';
 import 'package:myshop/services/AuthServices/auth_method.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
-import 'package:myshop/services/bloc/AuthBloc/LoginCubit/login_cubit.dart';
+import 'package:myshop/bloc/AuthBloc/LoginCubit/login_cubit.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/utils/images.dart';
 import 'package:myshop/widgets/global/button.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../services/bloc/AuthBloc/LoginCubit/login_state.dart';
+import '../../bloc/AuthBloc/LoginCubit/login_state.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -205,14 +205,17 @@ class _SignInPageState extends State<SignInPage> {
                                         : false;
 
                                 Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (_) => isAdmin
-                                            ? const AdminNavigationBar()
-                                            : const UserNavigationBar()));
+                                  MaterialPageRoute(
+                                    builder: (_) => isAdmin
+                                        ? const AdminNavigationBar()
+                                        : const UserNavigationBar(),
+                                  ),
+                                );
 
                                 emailController.clear();
                                 passwordController.clear();
-                                VxToast.show(context, msg:"Welcome ${state.name}");
+                                VxToast.show(context,
+                                    msg: "Welcome ${state.name}");
                               } else if (state is LoginErrorState) {
                                 VxToast.show(context, msg: state.error);
                               }

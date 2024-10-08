@@ -2,9 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:myshop/bloc/ProductBloc/GetAllProducts_Cubit/get_all_products_cubit.dart';
+import 'package:myshop/bloc/ProductBloc/GetBestSelling_Cubit/best_selling_product_cubit.dart';
 import 'package:myshop/pages/onStart/splash_screen.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
-import 'package:myshop/services/bloc/AuthBloc/LoginCubit/login_cubit.dart';
+import 'package:myshop/bloc/AuthBloc/LoginCubit/login_cubit.dart';
 import 'package:myshop/utils/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +24,7 @@ void main() async {
           projectId: "grocerry-app-2fb25",
           storageBucket: "grocerry-app-2fb25.appspot.com"));
 
-  runApp( const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +39,13 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => LoginCubit(),
-        )
+        ),
+        BlocProvider(
+          create: (_) => BestSellingProductCubit(),
+        ),
+        BlocProvider(
+          create: (_) => GetAllProductsCubit(),
+        ),
       ],
       child: MaterialApp(
         navigatorObservers: [routeObserver],

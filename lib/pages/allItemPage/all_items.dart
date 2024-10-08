@@ -1,6 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/bloc/ProductBloc/GetAllProducts_Cubit/get_all_products_cubit.dart';
+import 'package:myshop/bloc/ProductBloc/GetAllProducts_Cubit/get_all_products_state.dart';
+
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
 
 import 'package:myshop/services/ProductServices/product_service.dart';
@@ -23,23 +26,20 @@ class _AllItemsPageState extends State<AllItemsPage> {
   final ProductService _productService = ProductService();
   bool isSearching = false;
   bool isPriceUp = false;
-  bool isLoading = false;
+
   @override
   void initState() {
+    final allProducts = BlocProvider.of<GetAllProductsCubit>(context);
+
+    if (allProducts.state is GetAllProductsLoadedState) {}
     getAllProducts();
     super.initState();
   }
 
   void getAllProducts() async {
-    setState(() {
-      isLoading = true;
-    });
-    allProducts = await ProductService().getAllAvailableItems();
-    filterdProducts = allProducts;
-
-    setState(() {
-      isLoading = false;
-    });
+    // allProducts =
+    //     await BlocProvider.of<GetAllProductsCubit>(context).getAllProducts();
+    // filterdProducts = allProducts;
   }
 
   void filterByLowPrice() {
@@ -207,26 +207,31 @@ class _AllItemsPageState extends State<AllItemsPage> {
         ],
         centerTitle: true,
       ),
-      body: isLoading ? 
-     const  Center(child: CircularProgressIndicator(),)
-      : filterdProducts.isEmpty
-          ?  Container(
-                color: AppColors.lightModeCardColor,
-                height: double.maxFinite,
-                width: double.maxFinite,
-
-                child:const Center(
-                  child:   Text(
-                    "No Item Found",
-                    style: TextStyle(
-                        color: AppColors.themeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-              )
-            
-          : GridView.builder(
+      body: BlocBuilder<GetAllProductsCubit, GetAllProductsState>(
+        builder: (context, state) {
+          if (state is GetAllProductsLoadingState) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: AppColors.whiteColor,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.themeColor),
+              ),
+            );
+          } else if (state is GetAllProductsErrorState) {
+            return const Center(
+              child: Text(
+                "No Item Found",
+                style: TextStyle(
+                    color: AppColors.themeColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500),
+              ),
+            );
+          } else if (state is GetAllProductsLoadedState) {
+            if (filterdProducts.isEmpty) {
+              allProducts = state.products;
+              filterdProducts = allProducts; 
+            }
+            return GridView.builder(
               padding: const EdgeInsets.symmetric(vertical: 16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -250,7 +255,20 @@ class _AllItemsPageState extends State<AllItemsPage> {
                       price: filterdProducts[index].price ?? "Na"),
                 );
               },
-            ),
+            );
+          } else {
+            return const Center(
+              child: Text(
+                "Error while geting product",
+                style: TextStyle(
+                    color: AppColors.themeColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }

@@ -18,7 +18,7 @@ class UserServices {
     _currentUser = FirebaseAuth.instance.currentUser;
 
     if (_users != null && _currentUser != null) {
-       _users
+      _users
           ?.doc(_currentUser?.uid)
           .set(UserModel(
             id: _currentUser?.uid,
@@ -68,6 +68,8 @@ class UserServices {
     required String street,
   }) async {
     try {
+      if (_currentUser == null || _users == null) return;
+
       DocumentReference userDocRef = _users!.doc(_currentUser?.uid);
 
       Address address = Address(
@@ -78,9 +80,8 @@ class UserServices {
       );
       await userDocRef.update({
         "address": address.toJson(),
-      }).then((va) async {
-        Vx.log("Updated Successfully");
       });
+      
     } catch (e) {
       Vx.log('Error updating Address users: $e');
     }
@@ -98,6 +99,4 @@ class UserServices {
       Vx.log('Error Set User profile pic $e');
     }
   }
-
-
 }

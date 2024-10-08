@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
+import 'package:myshop/bloc/ProductBloc/GetBestSelling_Cubit/best_selling_product_cubit.dart';
+import 'package:myshop/bloc/ProductBloc/GetBestSelling_Cubit/best_selling_product_state.dart';
 import 'package:myshop/pages/categoryWiseItem/category_item.dart';
 import 'package:myshop/pages/singleItemPage/item_detail_page.dart';
 import 'package:myshop/pages/user_navigation_bar.dart';
-import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/services/UserServices/user_services.dart';
 import 'package:myshop/utils/colors.dart';
@@ -14,8 +16,7 @@ import 'package:myshop/widgets/global/category_avatar.dart';
 import 'package:myshop/widgets/global/offer_card.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
-
-
+import 'package:velocity_x/velocity_x.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -25,6 +26,8 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+
+  
   static const List<Map<String, String>> catItemsList = [
     {"catName": "Fruits", "catImage": AppImages.fruits},
     {"catName": "Vegetables", "catImage": AppImages.vegetables},
@@ -40,20 +43,18 @@ class _HomepageState extends State<Homepage> {
 
   late UserServices _userServices;
   late UserProvider _userProvider;
-  late ProductService _productService;
+
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _pinController = TextEditingController();
 
   UserModel? currentUser;
-  List<ProductModel> bestSelling = [];
 
   @override
   void initState() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     _userServices = UserServices();
-    _productService = ProductService();
 
     currentUser = _userProvider.getCurrentUser;
 
@@ -63,13 +64,8 @@ class _HomepageState extends State<Homepage> {
       _countryController.text = currentUser?.address?.country ?? "";
       _pinController.text = currentUser?.address?.postalCode ?? "";
     }
-    getBestSelling();
-    super.initState();
-  }
 
-  void getBestSelling() async {
-    bestSelling = await _productService.getBestSelling();
-    setState(() {});
+    super.initState();
   }
 
   void changeAddress() async {
@@ -315,7 +311,6 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.lightModeCardColor,
@@ -467,19 +462,24 @@ class _HomepageState extends State<Homepage> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ).copyWith(top: 40, bottom: 20),
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                   const Text(
+                    const Text(
                       "Categories 😋",
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     GestureDetector(
-                          onTap: (){
-                             Navigator.push(context, MaterialPageRoute(builder: (_)=>const UserNavigationBar(index:1 ,)));
-                          },
-                      child:const Text(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const UserNavigationBar(
+                                      index: 1,
+                                    )));
+                      },
+                      child: const Text(
                         "See all",
                         style: TextStyle(
                             fontSize: 14,
@@ -495,7 +495,6 @@ class _HomepageState extends State<Homepage> {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: catItemsList.length,
-                    
                     itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -532,28 +531,59 @@ class _HomepageState extends State<Homepage> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 214,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: bestSelling.length,
-                    itemBuilder: (context, index) => InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => ItemDetailPage(
-                                          product: bestSelling[index],
-                                        )));
-                          },
-                          child: ItemCard(
-                              price:
-                                  bestSelling[index].price ?? "NA",
-                              name: bestSelling[index].name ?? "NA",
-                              image: bestSelling[index].imageUrl ?? " "
-                                  ),
-                        )),
-              )
+              BlocConsumer<BestSellingProductCubit, BestSellingProductState>(
+                  listener: (context, state) {
+                if (state is BestSellingProductErrorState) {
+                  VxToast.show(context, msg: state.error);
+                }
+              }, builder: (context, state) {
+                if (state is BestSellingProductLoadedState) {
+                  List<ProductModel> bestSelling = state.products;
+                  return SizedBox(
+                    height: 214,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: bestSelling.length,
+                        itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => ItemDetailPage(
+                                              product: bestSelling[index],
+                                            )));
+                              },
+                              child: ItemCard(
+                                  price: bestSelling[index].price ?? "NA",
+                                  name: bestSelling[index].name ?? "NA",
+                                  image: bestSelling[index].imageUrl ?? " "),
+                            )),
+                  );
+                } else if (state is BestSellingProductLoadingState) {
+                  return SizedBox(
+                    height: 214,
+                    width: 170,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 3,
+                      itemExtent: 40,
+                      itemBuilder: (context, index) => const Center(
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(
+                            backgroundColor: AppColors.whiteColor,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.themeColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return const Center(
+                  child: Text("Error while Getting Best Selling"),
+                );
+              })
             ],
           ),
         ),

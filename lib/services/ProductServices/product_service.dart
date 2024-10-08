@@ -53,6 +53,8 @@ class ProductService {
     return allProducts;
   }
 
+
+
   Future<List<ProductModel>> getBestSelling() async {
     List<ProductModel> allProducts = [];
 
@@ -75,4 +77,5 @@ class ProductService {
 
     return allProducts;
   }
+
 }

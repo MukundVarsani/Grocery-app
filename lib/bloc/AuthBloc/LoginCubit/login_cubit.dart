@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/services/AuthServices/auth_method.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
-import 'package:myshop/services/bloc/AuthBloc/LoginCubit/login_state.dart';
+import 'package:myshop/bloc/AuthBloc/LoginCubit/login_state.dart';
 import 'package:myshop/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
