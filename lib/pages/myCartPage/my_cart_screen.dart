@@ -48,29 +48,30 @@ class _MyCartScreenState extends State<MyCartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.whiteColor,
-        appBar: AppBar(
-          backgroundColor: AppColors.themeColor,
-          elevation: 0,
-          title: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Cart",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: AppColors.whiteColor),
-              ),
-              Icon(
-                Icons.shopping_cart,
-                color: AppColors.whiteColor,
-              )
-            ],
-          ),
-          centerTitle: true,
+      backgroundColor: AppColors.whiteColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.themeColor,
+        elevation: 0,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Cart",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: AppColors.whiteColor),
+            ),
+            Icon(
+              Icons.shopping_cart,
+              color: AppColors.whiteColor,
+            )
+          ],
         ),
-        body: BlocBuilder<CartCubit, CartState>(builder: (_, state) {
+        centerTitle: true,
+      ),
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (_, state) {
           if (state is CartLoadingState) {
             return const Center(
               child: CircularProgressIndicator.adaptive(
@@ -256,6 +257,8 @@ class _MyCartScreenState extends State<MyCartScreen> {
                   fontWeight: FontWeight.w500),
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 }

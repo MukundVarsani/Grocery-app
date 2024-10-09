@@ -189,22 +189,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
                                       return Center(
-                                        child:
-                                            CircularProgressIndicator.adaptive(
-                                          backgroundColor: AppColors.whiteColor,
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                  Color>(
-                                            AppColors.themeColor,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColors.whiteColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(50)),
+                                          child: CircularProgressIndicator
+                                              .adaptive(
+                                            backgroundColor:
+                                                AppColors.whiteColor,
+                                            valueColor:
+                                                const AlwaysStoppedAnimation<
+                                                    Color>(
+                                              AppColors.themeColor,
+                                            ),
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
                                           ),
-                                          value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                              : null,
                                         ),
                                       );
                                     },

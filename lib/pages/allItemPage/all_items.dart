@@ -227,10 +227,10 @@ class _AllItemsPageState extends State<AllItemsPage> {
               ),
             );
           } else if (state is GetAllProductsLoadedState) {
-            if (filterdProducts.isEmpty) {
-              allProducts = state.products;
-              filterdProducts = allProducts; 
-            }
+              if (filterdProducts.isEmpty) {
+                allProducts = state.products;
+                filterdProducts = allProducts; 
+              }
             return GridView.builder(
               padding: const EdgeInsets.symmetric(vertical: 16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Admin/Pages/Add_to_storage/add_Item_to_cat_page.dart';
 import 'package:myshop/Admin/Pages/display_item_page/display_avail_Item.dart';
 import 'package:myshop/Admin/Pages/Product_detail_page/product_detail_Page.dart';
@@ -7,6 +8,8 @@ import 'package:myshop/Admin/admin_navigation_bar.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/Model/user_model.dart';
 import 'package:myshop/Resources/auth/sign_in.dart';
+import 'package:myshop/bloc/ProductBloc/GetBestSelling_Cubit/best_selling_product_cubit.dart';
+import 'package:myshop/bloc/ProductBloc/GetBestSelling_Cubit/best_selling_product_state.dart';
 import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/services/Provider/user_provider.dart';
 import 'package:myshop/utils/colors.dart';
@@ -17,6 +20,7 @@ import 'package:myshop/widgets/global/button.dart';
 import 'package:myshop/widgets/global/category_avatar.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -51,7 +55,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     _currentUser = _userProvider.getCurrentUser;
     _productService = ProductService();
-    getBestSelling();
   }
 
   void logoutUser() async {
@@ -67,18 +70,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
               type: PageTransitionType.scale, child: const SignInPage()),
           (route) => false);
 
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(builder: (_) => PageTransition(
-      //       type: PageTransitionType.scale,
-      //       child: const SignInPage())),
-      //     (route) => false);
+      Navigator.pushAndRemoveUntil(
+        context,
+        PageTransition(
+            type: PageTransitionType.scale, child: const SignInPage()),
+        (route) => false,
+      );
     }
-  }
-
-  void getBestSelling() async {
-    bestSelling = await _productService.getBestSelling();
-    setState(() {});
   }
 
   @override
@@ -209,25 +207,52 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 214,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: bestSelling.length,
-                  itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => ProductDetailPage(
-                                        product: bestSelling[index],
-                                      )));
-                        },
-                        child: ItemCard(
-                            price: bestSelling[index].price ?? "NA",
-                            name: bestSelling[index].name ?? "NA",
-                            image: bestSelling[index].imageUrl ?? " "),
-                      )),
+            BlocBuilder<BestSellingProductCubit, BestSellingProductState>(
+              builder: (_, state) {
+                if (state is BestSellingProductLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(
+                      backgroundColor: AppColors.whiteColor,
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(AppColors.themeColor),
+                    ),
+                  );
+                } else if (state is BestSellingProductLoadedState) {
+                  bestSelling = state.products;
+                  return SizedBox(
+                    height: 214,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: bestSelling.length,
+                        itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => ProductDetailPage(
+                                              product: bestSelling[index],
+                                            )));
+                              },
+                              child: ItemCard(
+                                  price: bestSelling[index].price ?? "NA",
+                                  name: bestSelling[index].name ?? "NA",
+                                  image: bestSelling[index].imageUrl ?? " "),
+                            )),
+                  );
+                } else if (state is BestSellingProductErrorState) {
+                  VxToast.show(context, msg: state.error);
+                }
+                return const Center(
+                  child: Text(
+                    "Error while Getting Best Selling",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.themeColor,
+                    ),
+                  ),
+                );
+              },
             ),
             const Spacer(),
             Padding(

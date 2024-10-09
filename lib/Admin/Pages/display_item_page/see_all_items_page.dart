@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Admin/Pages/Product_detail_page/product_detail_Page.dart';
 import 'package:myshop/Model/product_model.dart';
+import 'package:myshop/bloc/ProductBloc/GetAllProducts_Cubit/get_all_products_cubit.dart';
 import 'package:myshop/services/ProductServices/product_service.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:myshop/widgets/features/best_selling.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../../../bloc/ProductBloc/GetAllProducts_Cubit/get_all_products_state.dart';
 
 class SeeAllItemsPage extends StatefulWidget {
   const SeeAllItemsPage({super.key});
@@ -204,50 +208,71 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
         ],
         centerTitle: true,
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator.adaptive())
-          : filteredProduct.isEmpty
-              ? Container(
-                  color: AppColors.lightModeCardColor,
-                  height: double.maxFinite,
-                  width: double.maxFinite,
-                  child: const Center(
-                    child: Text(
-                      "No Item Found",
-                      style: TextStyle(
-                          color: AppColors.themeColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500),
+      body: BlocBuilder<GetAllProductsCubit, GetAllProductsState>(
+          builder: (context, state) {
+        if (state is GetAllProductsLoadingState) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(
+              backgroundColor: AppColors.whiteColor,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.themeColor),
+            ),
+          );
+        } else if (state is GetAllProductsErrorState) {
+          return const Center(
+            child: Text(
+              "No Item Found",
+              style: TextStyle(
+                  color: AppColors.themeColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
+            ),
+          );
+        }
+
+        if (state is GetAllProductsLoadedState) {
+          if (filteredProduct.isEmpty) {
+            allProducts = state.products;
+            filteredProduct = allProducts;
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 20,
+              childAspectRatio: 163 / 180,
+            ),
+            itemCount: filteredProduct.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (c) =>
+                          ProductDetailPage(product: filteredProduct[index]),
                     ),
-                  ),
-                )
-              : GridView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: 163 / 180,
-                  ),
-                  itemCount: filteredProduct.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (c) => ProductDetailPage(
-                                product: filteredProduct[index]),
-                          ),
-                        )
-                      },
-                      child: ItemCard(
-                        image: filteredProduct[index].imageUrl ?? "",
-                        name: filteredProduct[index].name ?? "NA",
-                        price: filteredProduct[index].price ?? "NA",
-                      ),
-                    );
-                  },
+                  )
+                },
+                child: ItemCard(
+                  image: filteredProduct[index].imageUrl ?? "",
+                  name: filteredProduct[index].name ?? "NA",
+                  price: filteredProduct[index].price ?? "NA",
                 ),
+              );
+            },
+          );
+        }
+        return const Center(
+          child: Text(
+            "Error while geting product",
+            style: TextStyle(
+                color: AppColors.themeColor,
+                fontSize: 18,
+                fontWeight: FontWeight.w500),
+          ),
+        );
+      }),
     );
   }
 }
