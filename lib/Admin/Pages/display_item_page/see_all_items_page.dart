@@ -229,6 +229,8 @@ class _SeeAllItemsPageState extends State<SeeAllItemsPage> {
           );
         }
 
+        
+
         if (state is GetAllProductsLoadedState) {
           if (filteredProduct.isEmpty) {
             allProducts = state.products;

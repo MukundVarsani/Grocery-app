@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myshop/Admin/Pages/User_Order/order_tile.dart';
 import 'package:myshop/Admin/Pages/User_Order/user_order_page.dart';
-import 'package:myshop/Admin/Services/admin_order_service.dart';
 import 'package:myshop/Model/order_model.dart';
+import 'package:myshop/bloc/AllUsersOrderBloc/all_user_Orders_cubit.dart';
+import 'package:myshop/bloc/AllUsersOrderBloc/all_users_orders_state.dart';
 import 'package:myshop/utils/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -18,7 +19,6 @@ class _AllUserOrderPageState extends State<AllUserOrderPage> {
   List<OrderModel> allOrders = [];
   List<OrderModel> filteredOrder = [];
   bool isSearching = false;
-  bool isLoading = false;
   int currentFilter = 0;
   List<String> allStatusCode = ["1", "2", "3", "4"];
   List<String> allStatus = [
@@ -27,23 +27,6 @@ class _AllUserOrderPageState extends State<AllUserOrderPage> {
     "Order Canceled",
     "Order Placed"
   ];
-
-  @override
-  void initState() {
-    getUserOrdersList();
-    super.initState();
-  }
-
-  void getUserOrdersList() async {
-    setState(() {
-      isLoading = true;
-    });
-    allOrders = await AdminOrderService().getAllOrder();
-    filteredOrder = allOrders;
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   void filterByStatus(int index) {
     final input = allStatusCode[index].toLowerCase();
@@ -152,6 +135,7 @@ class _AllUserOrderPageState extends State<AllUserOrderPage> {
 
                                       GestureDetector(
                                         onTap: () {
+                                           context.read<AllUserOrdersCubit>().getAllOrders();
                                           currentFilter++;
                                           filterByStatus(currentFilter % 4);
                                           Navigator.pop(context);
@@ -173,7 +157,7 @@ class _AllUserOrderPageState extends State<AllUserOrderPage> {
                                       GestureDetector(
                                         onTap: () {
                                           filteredOrder = allOrders;
-                                            Navigator.pop(context);
+                                          Navigator.pop(context);
                                           setState(() {});
                                         },
                                         child: Container(
@@ -206,50 +190,71 @@ class _AllUserOrderPageState extends State<AllUserOrderPage> {
           ],
           centerTitle: true,
         ),
-        body: isLoading
-            ? const Center(child: CircularProgressIndicator.adaptive())
-            : filteredOrder.isEmpty
-                ? Container(
-                    color: AppColors.lightModeCardColor,
-                    height: double.maxFinite,
-                    width: double.maxFinite,
-                    child: const Center(
-                      child: Text(
-                        "No Item Found",
-                        style: TextStyle(
-                            color: AppColors.themeColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    itemCount: filteredOrder.length,
-                    itemBuilder: (_, index) {
-                      return Column(
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => UserOrderPage(
-                                              userId: filteredOrder[index]
-                                                  .userId
-                                                  .toString(),
-                                            )));
-                              },
-                              child: OrderTile(
-                                orderId: filteredOrder[index].id.toString(),
-                                statusCode:
-                                    filteredOrder[index].orderStatus.toString(),
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      );
-                    }));
+        body: BlocBuilder<AllUserOrdersCubit, AllUsersOrdersState>(
+          builder: (context, state) {
+            if (state is AllUsersOrderLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(
+                  backgroundColor: AppColors.whiteColor,
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.themeColor),
+                ),
+              );
+            } else if (state is AllUsersOrderErrorState) {
+              return const Center(
+                child: Text(
+                  "No Item Found",
+                  style: TextStyle(
+                      color: AppColors.themeColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500),
+                ),
+              );
+            } else if (state is AllUsersOrderLoadedState) {
+              if (filteredOrder.isEmpty) {
+                allOrders = state.allUsersOrders;
+                filteredOrder = allOrders;
+              }
+              return ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  itemCount: filteredOrder.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => UserOrderPage(
+                                    userId:
+                                        filteredOrder[index].userId.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: OrderTile(
+                              orderId: filteredOrder[index].id.toString(),
+                              statusCode:
+                                  filteredOrder[index].orderStatus.toString(),
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        )
+                      ],
+                    );
+                  });
+            }
+            return const Center(
+              child: Text(
+                "Error while geting product",
+                style: TextStyle(
+                    color: AppColors.themeColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500),
+              ),
+            );
+          },
+        ));
   }
 }

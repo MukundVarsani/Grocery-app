@@ -4,8 +4,10 @@ import 'package:myshop/Admin/Services/admin_order_service.dart';
 import 'package:myshop/Model/order_model.dart';
 import 'package:myshop/Model/product_model.dart';
 import 'package:myshop/pages/OrderPage/order_item_card.dart';
-
 import 'package:myshop/utils/colors.dart';
+
+
+
 class UserOrderPage extends StatefulWidget {
   final String userId;
 
@@ -62,7 +64,6 @@ class _UserOrderPageState extends State<UserOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -237,11 +238,10 @@ class _UserOrderPageState extends State<UserOrderPage> {
                         ],
                         onStepReached: (index) {
                           _adminOrderService.updateOrderStatus(
-                              statusCode: (index + 1).toString(),
-                              userId: myOrder!.userId.toString()
-                              );
-                          activeStep = index+1;
-
+                            statusCode: (index + 1).toString(),
+                            userId: myOrder!.userId.toString(),
+                          );
+                          activeStep = index + 1;
                           setState(() {});
                         },
                       ),
